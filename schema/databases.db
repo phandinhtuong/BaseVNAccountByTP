@@ -1,0 +1,17 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    dob DATE,
+    company_name VARCHAR(255),
+    job_title VARCHAR(255),
+    phone_number VARCHAR(20),
+    managers VARCHAR(255),
+    address VARCHAR(255),
+    profile_picture BLOB,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <a href="../index.html">Home</a>
+    <div class="login-container">
+        <h1>let's login</h1>
+        <form action="Login.php" method="post">
+
+            <label>email</label>
+            <label>
+                <input type="email" name="email">
+            </label>
+            <br>
+
+            <label>password</label>
+            <label>
+                <input type="password" name="password">
+            </label>
+            <br>
+            <button type="submit" name="login-submit">Login</button>
+        </form>
+    </div>
+
+    <div style="margin-top: 15px; text-align: center;">
+        <a href="signup.html">Don't have an account? Register here</a>
+    </div>
+
+    <script>
+        // Handle success message
+        const urlParams = new URLSearchParams(window.location.search);
+        const container = document.querySelector('.login-container');
+
+        const savedValues = {
+            email: urlParams.get('email')
+        };
+
+        if (urlParams.get('registration') === 'success') {
+
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'success';
+            msgDiv.textContent = 'Registration successful! Please login.';
+            document.querySelector('.login-container').prepend(msgDiv);
+
+            // Clean URL
+            window.history.replaceState({}, '', window.location.pathname);
+            if (savedValues.email) {
+                document.querySelector('input[name="email"]').value = decodeURIComponent(savedValues.email);
+            }
+
+        }
+
+        if (urlParams.has('error')) {
+            console.error("error exists");
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+
+            // Map error codes to friendly messages
+            const errorMessages = {
+                'nullEmailOrPassword': 'Please input email and password',
+                'noUser': 'User not found',
+                'wrongPassword': 'Incorrect password',
+                'default': 'Login failed. Please try again.'
+            };
+
+            const errorCode = urlParams.get('error');
+            errorDiv.textContent = errorMessages[errorCode] || errorMessages['default'];
+            container.prepend(errorDiv);
+        }
+
+        if (window.location.search) {
+            // Remove all URL parameters without reloading the page
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
+
+        if (savedValues.email) {
+            document.querySelector('input[name="email"]').value = decodeURIComponent(savedValues.email);
+        }
+
+    </script>
+
+</body>
+</html>

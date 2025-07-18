@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+</head>
+<body>
+    <a href="../index.html">Home</a>
+    <div class="signup-container">
+        <h1>let's signup</h1>
+        <form action="Signup.php" method="post">
+            <label>name</label>
+            <label>
+                <input type="text" name="name">
+            </label>
+            <br>
+
+            <label>username</label>
+            <label>
+                <input type="text" name="username">
+            </label>
+            <br>
+
+            <label>email</label>
+            <label>
+                <input type="email" name="email">
+            </label>
+            <br>
+
+            <label>pass</label>
+            <label>
+                <input type="password" name="password">
+            </label>
+            <br>
+            <button type="submit" name="signup">Register</button>
+        </form>
+    </div>
+
+    <script>
+        // Handle success message
+        const urlParams = new URLSearchParams(window.location.search);
+        const container = document.querySelector('.signup-container');
+
+
+        if (urlParams.has('error')) {
+            const savedValues = {
+                name: urlParams.get('name'),
+                username: urlParams.get('username'),
+                email: urlParams.get('email')
+            };
+
+            if (window.location.search) {
+                // Remove all URL parameters without reloading the page
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+
+            if (savedValues.name) {
+                document.querySelector('input[name="name"]').value = decodeURIComponent(savedValues.name);
+            }
+            if (savedValues.username) {
+                document.querySelector('input[name="username"]').value = decodeURIComponent(savedValues.username);
+            }
+            if (savedValues.email) {
+                document.querySelector('input[name="email"]').value = decodeURIComponent(savedValues.email);
+            }
+
+            console.error("error exists");
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+
+            // Map error codes to friendly messages
+            const errorMessages = {
+                'nullName': 'Name is required',
+                'nullUsername': 'Username is required',
+                'nullEmail': 'Email is required',
+                'invalidEmail': 'Invalid email format',
+                'nullPassword': 'Password is required',
+                'weakPassword': 'Password must be at least 8 characters',
+                'usernameExists': 'Username or email already exists',
+                'default': 'Signup failed. Please try again.'
+            };
+
+            const errorCode = urlParams.get('error');
+            errorDiv.textContent = errorMessages[errorCode] || errorMessages['default'];
+            container.prepend(errorDiv);
+        }
+
+    </script>
+
+</body>
+</html>
