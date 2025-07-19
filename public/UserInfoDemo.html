@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class=" font-sans">
+
+<div class="w-full">
+    <!-- Header -->
+    <div class="bg-white px-4 py-4 flex items-center justify-between border-b">
+        <div class="flex items-center">
+            <!-- ArrowLeft SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 mr-3"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            <div>
+                <div class="text-xs text-gray-400 uppercase tracking-wide">ACCOUNT</div>
+                <div class="text-gray-700 font-medium">Phan Thanh Vũ · Owner</div>
+            </div>
+        </div>
+        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center text-sm font-medium">
+            <!-- Edit SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+            Edit my account
+        </button>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="bg-white mx-4 mt-6 rounded-lg p-6">
+        <div class="flex items-start">
+            <img
+                    src="https://csspicker.dev/api/image/?q=profile+person&image_type=photo"
+                    alt="Profile"
+                    class="w-20 h-20 rounded-full object-cover mr-6"
+            />
+            <div class="flex-1">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-1">Phan Thanh Vũ</h2>
+                <p class="text-gray-500 mb-4">Owner</p>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex">
+                        <span class="text-gray-500 w-32 flex-shrink-0">Email address</span>
+                        <span class="text-gray-900">phanthanhvu18031997@gmail.com</span>
+                    </div>
+
+                    <div class="flex">
+                        <span class="text-gray-500 w-32 flex-shrink-0">Phone number</span>
+                        <span class="text-gray-900">0961035433</span>
+                    </div>
+
+                    <div class="flex">
+                        <span class="text-gray-500 w-32 flex-shrink-0">Direct managers</span>
+                        <div class="flex-1">
+                            <a href="#" class="text-blue-500 hover:text-blue-600 block">Phan Thanh Vũ 1</a>
+                            <a href="#" class="text-blue-500 hover:text-blue-600 block">Nguyễn Huyền</a>
+                            <a href="#" class="text-blue-500 hover:text-blue-600 block">Chu 23 Giang 1 chu thi</a>
+                            <a href="#" class="text-blue-500 hover:text-blue-600 block">Ly Khoa</a>
+                            <a href="#" class="text-blue-500 hover:text-blue-600 block">Bạch Hưng Kiên</a>
+                            <a href="#" class="text-blue-500 hover:text-blue-600 block">Nguyễn Thái Bảo - Test</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Info Section -->
+    <div class="mx-4 mt-8">
+        <h3 class="text-gray-400 uppercase tracking-wide text-sm font-medium mb-4">CONTACT INFO</h3>
+        <div class="bg-white rounded-lg p-6 text-sm">
+            <div class="flex">
+                <span class="text-gray-500 w-24 flex-shrink-0">Address</span>
+                <span class="text-gray-900">387 Vu Tong Phan Thanh Xuân, Hà Nội</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
