@@ -133,7 +133,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Information</title>
+    <title>User Profile</title>
+    <link rel="stylesheet" type="text/css" href="cssForUserInfoDemo2_new.css">
+    <link rel="stylesheet" type="text/css" href="../css/editProfile.css">
+
     <script>
         function showEditModal() {
             document.getElementById('editModal').style.display = 'block';
@@ -153,83 +156,181 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     </script>
 </head>
 <body>
-    <div class="container">
-        <h1>User Information</h1>
+    <div class="w-full">
+        <!-- Header -->
+        <div class="bg-white px-4 py-4 flex items-center justify-between border-b">
+            <div class="flex items-center">
+                <!-- ArrowLeft SVG -->
+                <a href="Logout.php"><svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600 mr-3"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg></a>
 
-        <div class="user-info">
-            <h2>Welcome, <?php echo htmlspecialchars($user->getUsername()); ?>!</h2>
-
-            <h3>Account Details</h3>
-            <?php if (!empty($user->getProfilePicture())): ?>
-                <img src="<?php echo htmlspecialchars($user->getProfilePicture()); ?>" alt="Profile Picture" style="max-width: 200px;">
-            <?php endif; ?>
-            <ul>
-
-                <li><strong>Name:</strong> <?php echo htmlspecialchars($user->getName() ?? ''); ?></li>
-                <li><strong>Username:</strong> <?php echo htmlspecialchars($user->getUsername() ?? ''); ?></li>
-                <li><strong>Email:</strong> <?php echo htmlspecialchars($user->getEmail()); ?></li>
-                <li><strong>DOB:</strong> <?php echo date('d/m/Y', strtotime($user->getDob())); ?></li>
-                <li><strong>Address:</strong> <?php echo htmlspecialchars($user->getAddress() ?? ''); ?></li>
-                <li><strong>Registration Date:</strong> <?php echo date('d/m/Y', strtotime($user->getCreatedAt())); ?></li>
-            </ul>
+                <div>
+                    <div class="text-xs text-gray-400 uppercase tracking-wide">ACCOUNT</div>
+                    <div class="text-gray-700 font-medium"><?php echo htmlspecialchars($user->getName() ?? ''); ?> · Owner</div>
+                </div>
+            </div>
+            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center text-sm font-medium" onclick="showEditModal()">
+                <!-- Edit SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M12 5v14"></path>
+                    <!-- Arrowhead (points upwards) -->
+                    <path d="m5 12 7-7 7 7"></path></svg>
+                Edit my account
+            </button>
         </div>
-        <button onclick="showEditModal()">Edit Profile</button>
-    </div>
 
-    <a href="Logout.php" class="logout-btn">Logout</a>
+        <!-- Profile Section -->
+        <div class="bg-white mx-4 mt-6 rounded-lg p-6">
+            <div class="flex items-start">
+<!--                <img src="../images/logo.full.png" alt="Profile" class="w-20 h-20 rounded-full object-cover mr-6">-->
 
-    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
-        <div style="background-color:white; margin:100px auto; padding:20px; width:80%; max-width:500px;">
-            <span style="float:right; cursor:pointer;" onclick="hideEditModal()">×</span>
-            <h2>Edit Profile</h2>
+                <?php if (!empty($user->getProfilePicture())): ?>
+                    <img src="<?php echo htmlspecialchars($user->getProfilePicture()); ?>" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover mr-6">
+                <?php else: ?>
+                    <img src="../images/default-avatar.jpg" alt="Default Profile Picture" class="w-20 h-20 rounded-full object-cover mr-6">
+                <?php endif; ?>
 
-            <form method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Your first name</label>
-                    <input type="text" name="firstName" value="<?php echo htmlspecialchars($user->getFirstName() ?? ''); ?>" style="width:100%; padding:8px;">
+                <div class="flex-1">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-1"><?php echo htmlspecialchars($user->getName() ?? ''); ?></h2>
+                    <p class="text-gray-500 mb-4">Owner</p>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="flex">
+                            <span class="text-gray-500 w-32 flex-shrink-0">Email address</span>
+                            <span class="text-gray-900"><?php echo htmlspecialchars($user->getEmail()); ?></span>
+                        </div>
+
+                        <div class="flex">
+                            <span class="text-gray-500 w-32 flex-shrink-0">Phone number</span>
+                            <span class="text-gray-900"><?php echo htmlspecialchars($user->getPhoneNumber()); ?></span>
+                        </div>
+
+                        <div class="flex">
+                            <span class="text-gray-500 w-32 flex-shrink-0">Direct managers</span>
+                            <div class="flex-1">
+                                <a href="http://localhost:8080/public/userinfodemo2.html#" class="text-blue-500 hover:text-blue-600 block">Phan Thanh Vũ 1</a>
+                                <a href="http://localhost:8080/public/userinfodemo2.html#" class="text-blue-500 hover:text-blue-600 block">Nguyễn Huyền</a>
+                                <a href="http://localhost:8080/public/userinfodemo2.html#" class="text-blue-500 hover:text-blue-600 block">Chu 23 Giang 1 chu thi</a>
+                                <a href="http://localhost:8080/public/userinfodemo2.html#" class="text-blue-500 hover:text-blue-600 block">Ly Khoa</a>
+                                <a href="http://localhost:8080/public/userinfodemo2.html#" class="text-blue-500 hover:text-blue-600 block">Bạch Hưng Kiên</a>
+                                <a href="http://localhost:8080/public/userinfodemo2.html#" class="text-blue-500 hover:text-blue-600 block">Nguyễn Thái Bảo - Test</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <hr style="height: 50px;">
+            <div class="flex items-start" style="width: 65%; padding: 20px;">
+                <div class="flex-1">
+                    <h3 class="text-gray-400 uppercase tracking-wide text-sm font-medium mb-4">CONTACT INFO</h3>
 
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Your last name</label>
-                    <input type="text" name="lastName" value="<?php echo htmlspecialchars($user->getLastName() ?? ''); ?>" style="width:100%; padding:8px;">
-                </div>
-
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Email:</label>
-                    <input disabled type="email" name="email" value="<?php echo htmlspecialchars($user->getEmail()); ?>" style="width:100%; padding:8px;">
-                </div>
-
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Username</label>
-                    <input disabled type="text" name="username" value="<?php echo htmlspecialchars($user->getUsername() ?? ''); ?>" style="width:100%; padding:8px;">
-                </div>
-
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Job title</label>
-                    <input type="text" name="jobTitle" value="<?php echo htmlspecialchars($user->getJobTitle() ?? ''); ?>" style="width:100%; padding:8px;">
-                </div>
-
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Company name</label>
-                    <input type="text" name="companyName" value="<?php echo htmlspecialchars($user->getCompanyName() ?? ''); ?>" style="width:100%; padding:8px;">
-                </div>
-
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Profile Picture</label>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display:none;"
-                               onchange="document.getElementById('file-name').textContent = this.files[0]?.name || 'No file chosen'">
-                        <button type="button" onclick="document.getElementById('profile_picture').click()">Choose File</button>
-                        <span id="file-name">No file chosen</span>
+                    <div class="bg-white text-sm border-b border-t py-4 " >
+                        <div class="flex">
+                            <span class="text-gray-500 w-24 flex-shrink-0">Address</span>
+                            <span class="text-gray-900"><?php echo htmlspecialchars($user->getAddress() ?? ''); ?></span>
+                        </div>
                     </div>
                 </div>
 
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Date of birth</label>
-                    <div class="dob-container">
-                        <!-- Day dropdown -->
+            </div>
+
+            <!--        <div class="flex items-start">-->
+            <!--            <h3 class="text-gray-400 uppercase tracking-wide text-sm font-medium mb-4">CONTACT INFO</h3>-->
+
+            <!--        </div>-->
+            <!--        <div class="flex items-start" >-->
+            <!--            <div class="bg-white rounded-lg p-6 text-sm">-->
+            <!--                <div class="flex">-->
+            <!--                    <span class="text-gray-500 w-24 flex-shrink-0">Address</span>-->
+            <!--                    <span class="text-gray-900">387 Vu Tong Phan Thanh Xuân, Hà Nội</span>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <!--        </div>-->
+
+        </div>
+
+    </div>
+
+
+
+
+    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
+
+
+        <div style="background-color:white; margin:100px auto; width:80%; max-width:700px;">
+            <div style="background-color:#EFEFEF; padding:10px;">
+
+                <span style="float:right; cursor:pointer;" onclick="hideEditModal()">×</span>
+                <h2>EDIT PERSONAL PROFILE</h2>
+            </div>
+            <form method="POST" enctype="multipart/form-data" style="padding:15px;">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Your first name</div>
+                        <div class="label-help">Your first name</div>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" placeholder="Your first name" name="firstName" value="<?php echo htmlspecialchars($user->getFirstName() ?? ''); ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Your last name</div>
+                        <div class="label-help">Your last name</div>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" placeholder="Your last name" name="lastName" value="<?php echo htmlspecialchars($user->getLastName() ?? ''); ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Email</div>
+                        <div class="label-help">Your email address</div>
+                    </div>
+                    <div class="form-control">
+                        <input disabled type="email" placeholder="Your email" name="email" value="<?php echo htmlspecialchars($user->getEmail()); ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Username</div>
+                        <div class="label-help">Your username</div>
+                    </div>
+                    <div class="form-control">
+                        <input disabled type="text" placeholder="@username" name="username" value="<?php echo htmlspecialchars($user->getUsername() ?? ''); ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Job title</div>
+                        <div class="label-help">Job title</div>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" placeholder="Your job title" name="jobTitle" value="<?php echo htmlspecialchars($user->getJobTitle() ?? ''); ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Profile image</div>
+                        <div class="label-help">Profile image</div>
+                    </div>
+                    <div class="form-control">
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Date of birth</div>
+                        <div class="label-help">Date of birth</div>
+                    </div>
+                    <div class="form-control dob-selects">
                         <select id="day" name="day" required>
                             <option value="" selected disabled>Day</option>
                             <script>
@@ -282,23 +383,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                     </div>
                 </div>
 
-
-
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Your phone number</label>
-                    <input type="text" name="phoneNumber" value="<?php echo htmlspecialchars($user->getPhoneNumber() ?? ''); ?>" style="width:100%; padding:8px;">
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Your phone number</div>
+                        <div class="label-help">Your phone number</div>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" placeholder="Phone number" name="phoneNumber" value="<?php echo htmlspecialchars($user->getPhoneNumber() ?? ''); ?>">
+                    </div>
                 </div>
 
-                <div style="margin-bottom:15px;">
-                    <label style="display:block;">Current address</label>
-                    <input type="text" name="address" value="<?php echo htmlspecialchars($user->getAddress() ?? ''); ?>" style="width:100%; padding:8px;">
+                <div class="form-group">
+                    <div class="form-label">
+                        <div class="label-title">Current address</div>
+                        <div class="label-help">Current address</div>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" placeholder="Current address" name="address" value="<?php echo htmlspecialchars($user->getAddress() ?? ''); ?>">
+                    </div>
                 </div>
-
-                <div style="text-align:center;">
-                    <button type="button" onclick="hideEditModal()">Cancel</button>
-                    <button type="submit" name="update_profile">Update</button>
+                <div style="border-top: 1px dashed #d1d5db; margin: 20px 0;"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="hideEditModal()">Cancel</button>
+                    <button type="submit" class="btn-update" name="update_profile">Update</button>
                 </div>
             </form>
+
+
         </div>
     </div>
 

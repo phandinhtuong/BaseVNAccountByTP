@@ -1,0 +1,86 @@
+.bodyEdit {
+    font-family: Arial, sans-serif;
+    background: rgba(0, 0, 0, 0.6);
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: white;
+    border-radius: 5px;
+    width: 700px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.modal h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.form-group {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    width: 200px;
+    font-size: 14px;
+}
+
+.form-label .label-title {
+    font-weight: bold;
+}
+
+.form-label .label-help {
+    color: gray;
+    font-size: 12px;
+}
+
+.form-control {
+    flex: 1;
+}
+
+.form-control input,
+.form-control select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.dob-selects {
+    display: flex;
+    gap: 8px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.form-actions button {
+    flex: 1;
+    padding: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: #DDDDDD;
+    color: #333;
+}
+
+.btn-update {
+    background: #68B830;
+    color: white;
+}
