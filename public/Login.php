@@ -6,7 +6,7 @@ require "UserController.php";
 session_start();
 
 error_log("----------------------------------------------------------------");
-error_log("begin login form");
+error_log("begin login");
 
 
 error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
@@ -62,7 +62,7 @@ try {
                 unset($_SESSION['captcha']);
 
                 error_log("login success");
-                error_log("end login form");
+                error_log("end login");
                 error_log("----------------------------------------------------------------");
                 header("Location: UserInfo.php");
                 exit();
@@ -72,7 +72,7 @@ try {
     //            }
                 $_SESSION['failed_attempts']++;
                 error_log("Login error: email: ".$_POST['email'] . ", error:" . $result['error']);
-                error_log("end login form");
+                error_log("end login");
                 error_log("----------------------------------------------------------------");
                 header("Location: login.php?error=".$result['error']
                     ."&email=".urlencode($_POST['email']));
@@ -80,7 +80,7 @@ try {
             }
         } else {
             error_log("Login error: email: ".$_POST['email'] . ", error:" . $error);
-            error_log("end login form");
+            error_log("end login");
             error_log("----------------------------------------------------------------");
             header("Location: login.php?error=".$error
                 ."&email=".urlencode($_POST['email']));
@@ -90,10 +90,10 @@ try {
 } catch (PDOException $e) {
     error_log("Login error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
     echo 'Error, please try again later';
-    error_log("end login form");
+    error_log("end login");
     error_log("----------------------------------------------------------------");
 }
-error_log("end login form");
+error_log("end login");
 error_log("----------------------------------------------------------------");
 
 ?>

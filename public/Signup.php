@@ -5,6 +5,15 @@ session_start();
 require "../class/User.php";
 require "UserController.php";
 
+error_log("----------------------------------------------------------------");
+error_log("begin signup");
+
+
+error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
+error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
+error_log("POST VARIABLES:\n" . print_r($_POST, true));
+
+
 try {
     if (isset($_POST['signup'])) {
 
@@ -25,6 +34,11 @@ try {
         if ($result['success']) {
 
             if ($userController->signup()){
+
+                error_log("signup success");
+                error_log("end signup");
+                error_log("----------------------------------------------------------------");
+
                 header("Location: login.php?registration=success"."&email=".urlencode($_POST['email']));
                 exit();
             };
@@ -34,6 +48,12 @@ try {
 //                echo "<p style='color:red;'>$error</p>";
 //            }
 
+            error_log("Location: signup.php?error=".$result['error']
+                ."&name=".urlencode($_POST['name'])
+                ."&username=".urlencode($_POST['username'])
+                ."&email=".urlencode($_POST['email']));
+            error_log("end signup");
+            error_log("----------------------------------------------------------------");
 
             header("Location: signup.php?error=".$result['error']
                         ."&name=".urlencode($_POST['name'])
@@ -43,13 +63,16 @@ try {
 
         }
 
-    } else {
-        error_log("signup:  not found");
-        echo 'Error, please try again later';
     }
+//    else {
+//        error_log("signup:  not found");
+//        echo 'Error, please try again later';
+//    }
 
 } catch (PDOException $e) {
     error_log("Signup error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
+    error_log("end signup");
+    error_log("----------------------------------------------------------------");
     echo 'Error, please try again later';
 }
 ?>
