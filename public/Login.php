@@ -26,7 +26,7 @@ try {
 
         // Validate inputs
         //if (empty($userInput) || empty($password)) {
-        //    header("Location: login.html?error=emptyfields");
+        //    header("Location: login.php?error=emptyfields");
         //    exit();
         //}
         $result = $userController->login();
@@ -42,7 +42,7 @@ try {
 //            }
             error_log("Login error: email: ".$_POST['email'] . ", error:" . $result['error']);
 
-            header("Location: login.html?error=".$result['error']
+            header("Location: login.php?error=".$result['error']
                 ."&email=".urlencode($_POST['email']));
             exit();
         }

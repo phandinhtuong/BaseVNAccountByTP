@@ -35,7 +35,7 @@ try {
 //            }
 
 
-            header("Location: signup.html?error=".$result['error']
+            header("Location: signup.php?error=".$result['error']
                         ."&name=".urlencode($_POST['name'])
                         ."&username=".urlencode($_POST['username'])
                         ."&email=".urlencode($_POST['email']));

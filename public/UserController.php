@@ -28,7 +28,7 @@ class UserController
                 //$errors[] = "nullUsername";
                 $error = "nullName";
                 return ['success' => false, 'error' => $error];
-                //header("Location: signup.html?error=nullusername" . "&email=" . $user->getEmail(). "&name=" . $user->getName());
+                //header("Location: signup.php?error=nullusername" . "&email=" . $user->getEmail(). "&name=" . $user->getName());
                 //exit();
             }
 
@@ -37,7 +37,7 @@ class UserController
                 //$errors[] = "nullUsername";
                 $error = "nullUsername";
                 return ['success' => false, 'error' => $error];
-                //header("Location: signup.html?error=nullusername" . "&email=" . $user->getEmail(). "&name=" . $user->getName());
+                //header("Location: signup.php?error=nullusername" . "&email=" . $user->getEmail(). "&name=" . $user->getName());
                 //exit();
             }
 
@@ -129,7 +129,7 @@ class UserController
         //$errors = [];
 
         if (empty($this->user->getEmail()) || empty($this->user->getPassword())) {
-            //header("Location: login.html?error=emptyfields");
+            //header("Location: login.php?error=emptyfields");
             //exit();
             //$errors[] = "nullEmailOrPassword";
             $error = "nullEmailOrPassword";
@@ -144,7 +144,7 @@ class UserController
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                //header("Location: login.html?error=nouser");
+                //header("Location: login.php?error=nouser");
                 //exit();
                 //$errors[] = "noUser";
                 $error = "noUser";
@@ -155,7 +155,7 @@ class UserController
 
             // Verify password
             if (!password_verify($this->user->getPassword(), $dbUser['password'])) {
-                //header("Location: login.html?error=wrongpwd");
+                //header("Location: login.php?error=wrongpwd");
                 //exit();
                 //$errors[] = "wrongPassword";
                 $error = "wrongPassword";
