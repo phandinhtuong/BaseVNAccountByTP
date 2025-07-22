@@ -5,7 +5,21 @@ require "UserController.php";
 
 session_start();
 
+error_log("----------------------------------------------------------------");
+error_log("begin login form");
 
+
+error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
+error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
+error_log("POST VARIABLES:\n" . print_r($_POST, true));
+
+// Initialize failed attempts counter
+if (!isset($_SESSION['failed_attempts'])) {
+    error_log("session failed_attempts = 0");
+    $_SESSION['failed_attempts'] = 0;
+} else {
+    error_log("session failed_attempts = " .$_SESSION['failed_attempts']);
+}
 
 try {
     if (isset($_POST['login-submit'])) {
@@ -20,38 +34,68 @@ try {
 
         $user->setEmail($_POST['email']);
         $user->setPassword($_POST['password']);
+        $show_captcha = $_SESSION['failed_attempts'] >= 3;
 
-        $userController = new UserController($user);
+        // CAPTCHA verification if needed
+        if ($show_captcha) {
+            if (empty($_POST['captcha']) || empty($_SESSION['captcha']) ||
+                strtolower($_POST['captcha']) !== strtolower($_SESSION['captcha'])) {
+                $error = "invalidCAPTCHA";
+                $_SESSION['failed_attempts']++;
+            }
+        }
+        if (!isset($error)) {
+            $userController = new UserController($user);
 
 
-        // Validate inputs
-        //if (empty($userInput) || empty($password)) {
-        //    header("Location: login.php?error=emptyfields");
-        //    exit();
-        //}
-        $result = $userController->login();
+            // Validate inputs
+            //if (empty($userInput) || empty($password)) {
+            //    header("Location: login.php?error=emptyfields");
+            //    exit();
+            //}
+            $result = $userController->login();
 
-        if ($result['success']) {
-            $_SESSION['user_id'] = $result['user']->getId();
-            $_SESSION['username'] = $result['user']->getUsername();
-            header("Location: UserInfo.php");
-            exit();
+            if ($result['success']) {
+                $_SESSION['user_id'] = $result['user']->getId();
+                $_SESSION['username'] = $result['user']->getUsername();
+                unset($_SESSION['failed_attempts']);
+                unset($_SESSION['captcha']);
+
+                error_log("login success");
+                error_log("end login form");
+                error_log("----------------------------------------------------------------");
+                header("Location: UserInfo.php");
+                exit();
+            } else {
+    //            foreach ($result['errors'] as $error) {
+    //                echo "<p style='color:red;'>$error</p>";
+    //            }
+                $_SESSION['failed_attempts']++;
+                error_log("Login error: email: ".$_POST['email'] . ", error:" . $result['error']);
+                error_log("end login form");
+                error_log("----------------------------------------------------------------");
+                header("Location: login.php?error=".$result['error']
+                    ."&email=".urlencode($_POST['email']));
+                exit();
+            }
         } else {
-//            foreach ($result['errors'] as $error) {
-//                echo "<p style='color:red;'>$error</p>";
-//            }
-            error_log("Login error: email: ".$_POST['email'] . ", error:" . $result['error']);
-
-            header("Location: login.php?error=".$result['error']
+            error_log("Login error: email: ".$_POST['email'] . ", error:" . $error);
+            error_log("end login form");
+            error_log("----------------------------------------------------------------");
+            header("Location: login.php?error=".$error
                 ."&email=".urlencode($_POST['email']));
             exit();
         }
-
     }
 } catch (PDOException $e) {
     error_log("Login error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
     echo 'Error, please try again later';
+    error_log("end login form");
+    error_log("----------------------------------------------------------------");
 }
+error_log("end login form");
+error_log("----------------------------------------------------------------");
+
 ?>
 
 <!DOCTYPE html>
@@ -113,17 +157,18 @@ try {
                                         </div>
                                     </div>
 
-                                    <div class="captcha-group">
-                                        <label>Enter the text from the image:</label>
-                                        <div class="captcha-image">
-                                            <img src="captcha.php?<?php echo time(); ?>" alt="CAPTCHA">
-                                            <a href="#" onclick="document.querySelector('.captcha-image img').src='captcha.php?'+Date.now(); return false;">
-                                                Refresh
-                                            </a>
+                                    <?php if ($_SESSION['failed_attempts'] >= 3): ?>
+                                        <div class="captcha-group">
+                                            <label>Enter the text from the image:</label>
+                                            <div class="captcha-image">
+                                                <img src="captcha.php?<?php echo time(); ?>" alt="CAPTCHA">
+                                                <a href="#" onclick="document.querySelector('.captcha-image img').src='captcha.php?'+Date.now(); return false;">
+                                                    Refresh
+                                                </a>
+                                            </div>
+                                            <input type="text" name="captcha" required>
                                         </div>
-                                        <input type="text" name="captcha" required>
-                                    </div>
-
+                                    <?php endif; ?>
 
                                     <div class='row relative xo'>
                                         <div class='checkbox'>
@@ -263,6 +308,7 @@ try {
                 'nullEmailOrPassword': 'Please input email and password',
                 'noUser': 'User not found',
                 'wrongPassword': 'Incorrect password',
+                'invalidCAPTCHA': 'Invalid CAPTCHA, please try again',
                 'default': 'Login failed. Please try again.'
             };
 
