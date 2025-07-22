@@ -1,9 +1,10 @@
 <?php
 require "../class/User.php";
-require "UserController.php";
+//require_once "UserController.php";
+require_once "auth.php";
 
 // Start the session
-session_start();
+//session_start();
 
 error_log("----------------------------------------------------------------");
 error_log("begin UserInfo");
@@ -12,12 +13,13 @@ error_log("begin UserInfo");
 error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
 error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
 error_log("POST VARIABLES:\n" . print_r($_POST, true));
+error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
 
 // Check if user is logged in
 if (!isset($_SESSION['username'])) {
     error_log("no username");
     error_log("end UserInfo");
-    error_log("----------------------------------------------------------------");
+    error_log("----------------------------------------------------------------\n");
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
@@ -44,7 +46,7 @@ try {
 } catch (Exception $e) {
     error_log("error get user information: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
     error_log("end UserInfo");
-    error_log("----------------------------------------------------------------");
+    error_log("----------------------------------------------------------------\n");
     throw new Exception("error get user information:".$e->getMessage());
 }
 
@@ -55,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         error_log("post csrf token = " . $_POST['csrf_token'] . ", session csrf token = " . $_SESSION['csrf_token'].", CSRF token validation failed");
         error_log("end UserInfo");
-        error_log("----------------------------------------------------------------");
+        error_log("----------------------------------------------------------------\n");
         die("CSRF token validation failed");
     }
 
@@ -138,13 +140,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     } catch (Exception $e) {
         error_log("error update profile: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
         error_log("end UserInfo");
-        error_log("----------------------------------------------------------------");
+        error_log("----------------------------------------------------------------\n");
         echo '<script>alert("error update profile, see log for more details ");</script>';
     }
 }
 
 error_log("end UserInfo");
-error_log("----------------------------------------------------------------");
+error_log("----------------------------------------------------------------\n");
 
 ?>
 
@@ -365,10 +367,10 @@ error_log("----------------------------------------------------------------");
 
                         <!-- Month dropdown -->
                         <select id="month" name="month" required>
-                            <option value="" disabled>Month</option>
+                            <option value="" selected disabled>Month</option>
                             <script>
                                 // Get stored month from PHP
-                                const storedMonth = <?php echo $user->getDob() !== null ? (int)date('m', strtotime($user->getDob())) : 'null' ?>;
+                                const storedMonth = <?php echo $user->getDob() ? (int)date('m', strtotime($user->getDob())) : 'null' ?>;
 
                                 // Month names array
                                 const months = [
@@ -387,10 +389,10 @@ error_log("----------------------------------------------------------------");
 
                         <!-- Year dropdown -->
                         <select id="year" name="year" required>
-                            <option value="" disabled>Year</option>
+                            <option value="" selected disabled>Year</option>
                             <script>
                                 // Get stored year from PHP
-                                const storedYear = <?php echo $user->getDob() !== null ? (int)date('Y', strtotime($user->getDob())) : 'null' ?>;
+                                const storedYear = <?php echo $user->getDob() ? (int)date('Y', strtotime($user->getDob())) : 'null' ?>;
                                 const currentYear = new Date().getFullYear();
 
                                 // Populate years (current year to 1900)

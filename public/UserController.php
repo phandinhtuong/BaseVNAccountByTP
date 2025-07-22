@@ -13,6 +13,11 @@ class UserController
         $this->db = connectToDatabase();
     }
 
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function processBeforeSignup()
     {
         $this->user->hashPassword();
@@ -255,6 +260,74 @@ class UserController
             return false;
         }
     }
+
+    public function saveToken(string $token, string $expires)
+    {
+        try {
+            $sql = "
+                UPDATE users SET
+                    login_token    = :login_token, 
+                    login_token_expires     = :login_token_expires
+                WHERE 
+                    username = :username
+            ";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':login_token', $token);
+            $stmt->bindValue(':login_token_expires', $expires);
+            $stmt->bindValue(':username', $this->user->getUsername());
+            return $stmt->execute();
+
+        } catch(PDOException $e) {
+            error_log("error saveToken: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            return false;
+        }
+    }
+
+     function authToken(string $rememberToken): bool {
+
+        try {
+
+            $sql = "SELECT * FROM users WHERE username = :username and remember_token = :remember_token AND remember_expires > NOW()";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':username', $this->user->getUsername());
+            $stmt->bindValue(':remember_token', $rememberToken);
+
+            $stmt->execute();
+
+            $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$userInfo) {
+                return false;
+            } else {
+                return true;
+            }
+
+        } catch(PDOException $e) {
+            error_log("error authToken: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            throw $e;
+        }
+    }
+
+    public function clearToken(): bool
+    {
+        try {
+            $sql = "
+                UPDATE users SET
+                    login_token    = null, 
+                    login_token_expires     = null
+                WHERE 
+                    username = :username
+            ";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':username', $this->user->getUsername());
+            return $stmt->execute();
+
+        } catch(PDOException $e) {
+            error_log("error clearToken: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            return false;
+        }
+    }
+
 
 
 

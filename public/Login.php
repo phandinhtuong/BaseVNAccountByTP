@@ -12,6 +12,7 @@ error_log("begin login");
 error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
 error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
 error_log("POST VARIABLES:\n" . print_r($_POST, true));
+error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
 
 // Initialize failed attempts counter
 if (!isset($_SESSION['failed_attempts'])) {
@@ -19,6 +20,10 @@ if (!isset($_SESSION['failed_attempts'])) {
     $_SESSION['failed_attempts'] = 0;
 } else {
     error_log("session failed_attempts = " .$_SESSION['failed_attempts']);
+}
+
+function generateToken() {
+    return bin2hex(random_bytes(32));
 }
 
 try {
@@ -35,6 +40,7 @@ try {
         $user->setEmail($_POST['email']);
         $user->setPassword($_POST['password']);
         $show_captcha = $_SESSION['failed_attempts'] >= 3;
+        $remember = isset($_POST['remember']);
 
         // CAPTCHA verification if needed
         if ($show_captcha) {
@@ -56,14 +62,45 @@ try {
             $result = $userController->login();
 
             if ($result['success']) {
+                $userController->setUser($result['user']);
                 $_SESSION['user_id'] = $result['user']->getId();
                 $_SESSION['username'] = $result['user']->getUsername();
                 unset($_SESSION['failed_attempts']);
                 unset($_SESSION['captcha']);
 
+                if ($remember) {
+                    $token = generateToken();
+                    $expires = date('Y-m-d H:i:s', strtotime('+7 days'));
+
+
+                    if ($userController->saveToken($token,$expires)) {
+                        error_log("user ". $result['user']->getUsername() . " save token successfully: ".$token . ", expires " . $expires);
+                        // Set cookie (secure, HttpOnly, SameSite)
+                        setcookie(
+                            'remember',
+                            $_SESSION['username'] . ':' . $token,
+                            [
+                                'expires' => strtotime('+7 days'),
+                                'path' => '/',
+                                'secure' => true, // HTTPS only
+                                'httponly' => true,
+                                'samesite' => 'Strict'
+                            ]
+                        );
+
+                    } else {
+                        error_log("user ". $result['user']->getUsername() . "save token error");
+                        error_log("end login");
+                        error_log("----------------------------------------------------------------\n");
+                        header("Location: login.php?error=".$result['error']
+                            ."&email=".urlencode($_POST['email']));
+                        exit();
+                    }
+                }
+
                 error_log("login success");
                 error_log("end login");
-                error_log("----------------------------------------------------------------");
+                error_log("----------------------------------------------------------------\n");
                 header("Location: UserInfo.php");
                 exit();
             } else {
@@ -73,7 +110,7 @@ try {
                 $_SESSION['failed_attempts']++;
                 error_log("Login error: email: ".$_POST['email'] . ", error:" . $result['error']);
                 error_log("end login");
-                error_log("----------------------------------------------------------------");
+                error_log("----------------------------------------------------------------\n");
                 header("Location: login.php?error=".$result['error']
                     ."&email=".urlencode($_POST['email']));
                 exit();
@@ -81,7 +118,7 @@ try {
         } else {
             error_log("Login error: email: ".$_POST['email'] . ", error:" . $error);
             error_log("end login");
-            error_log("----------------------------------------------------------------");
+            error_log("----------------------------------------------------------------\n");
             header("Location: login.php?error=".$error
                 ."&email=".urlencode($_POST['email']));
             exit();
@@ -91,10 +128,10 @@ try {
     error_log("Login error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
     echo 'Error, please try again later';
     error_log("end login");
-    error_log("----------------------------------------------------------------");
+    error_log("----------------------------------------------------------------\n");
 }
 error_log("end login");
-error_log("----------------------------------------------------------------");
+error_log("----------------------------------------------------------------\n");
 
 ?>
 
@@ -172,8 +209,7 @@ error_log("----------------------------------------------------------------");
 
                                     <div class='row relative xo'>
                                         <div class='checkbox'>
-                                            <input type='checkbox' checked name='saved'>&nbsp;Keep me logged in
-
+                                            <input type='checkbox' id="remember" name='remember'>&nbsp;Keep me logged in
                                         </div>
 <!--                                        <div class='submit' onclick='Account.login(this);'>Login</div>-->
                                         <div class='submit' onclick="submitForm()">Login</div>
