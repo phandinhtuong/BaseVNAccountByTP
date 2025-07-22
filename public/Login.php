@@ -93,7 +93,7 @@ try {
                         error_log("end login");
                         error_log("----------------------------------------------------------------\n");
                         header("Location: login.php?error=".$result['error']
-                            ."&email=".urlencode($_POST['email']));
+                            ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
                         exit();
                     }
                 }
@@ -112,7 +112,7 @@ try {
                 error_log("end login");
                 error_log("----------------------------------------------------------------\n");
                 header("Location: login.php?error=".$result['error']
-                    ."&email=".urlencode($_POST['email']));
+                    ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
                 exit();
             }
         } else {
@@ -120,7 +120,7 @@ try {
             error_log("end login");
             error_log("----------------------------------------------------------------\n");
             header("Location: login.php?error=".$error
-                ."&email=".urlencode($_POST['email']));
+                ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
             exit();
         }
     }
@@ -315,7 +315,8 @@ error_log("----------------------------------------------------------------\n");
         const container = document.querySelector('.login-container');
 
         const savedValues = {
-            email: urlParams.get('email')
+            email: urlParams.get('email'),
+            remember: urlParams.get('remember')
         };
 
         if (urlParams.get('registration') === 'success') {
@@ -330,6 +331,9 @@ error_log("----------------------------------------------------------------\n");
             window.history.replaceState({}, '', window.location.pathname);
             if (savedValues.email) {
                 document.querySelector('input[name="email"]').value = decodeURIComponent(savedValues.email);
+            }
+            if (savedValues.remember) {
+                document.querySelector('input[name="remember"]').checked = true;
             }
 
         }
@@ -362,6 +366,10 @@ error_log("----------------------------------------------------------------\n");
 
         if (savedValues.email) {
             document.querySelector('input[name="email"]').value = decodeURIComponent(savedValues.email);
+        }
+
+        if (savedValues.remember) {
+            document.querySelector('input[name="remember"]').checked = true;
         }
 
     </script>
