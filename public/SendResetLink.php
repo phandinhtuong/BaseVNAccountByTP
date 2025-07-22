@@ -3,6 +3,8 @@ require '../vendor/autoload.php'; // Include PHPMailer
 
 require "../class/User.php";
 require "UserController.php";
+require "PasswordController.php";
+
 error_log("----------------------------------------------------------------");
 error_log("begin send reset link");
 
@@ -28,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Store in database
 //        $stmt = $pdo->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
 //        $stmt->execute([$email, $token, $expires]);
-        $userController->addPasswordReset($token, $expires);
+        $passwordController = new PasswordController();
+        $passwordController->addPasswordReset($email, $token, $expires);
 
         // Send email
         $resetLink = "http://localhost:8080/public/ResetPassword.php?token=$token";

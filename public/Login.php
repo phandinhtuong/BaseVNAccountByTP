@@ -350,6 +350,7 @@ error_log("----------------------------------------------------------------\n");
                 'wrongPassword': 'Incorrect password',
                 'invalidCAPTCHA': 'Invalid CAPTCHA, please try again',
                 'resetLinkSent': 'Reset password email sent, please check your inbox and follow the instruction.',
+                'updatePasswordSuccessfully': 'Update password successfully.',
                 'default': 'Login failed. Please try again.'
             };
 

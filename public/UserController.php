@@ -351,22 +351,23 @@ class UserController
         }
     }
 
-    public function addPasswordReset(string $token, string $expires_at): bool{
-
+    public function updatePassword()
+    {
         try {
-            $sql = "INSERT INTO password_resets (email, token, expires_at) 
-                             VALUES (:email, :token, :expires_at)";
+            $sql = "
+                UPDATE users SET
+                    password    = :password
+                WHERE 
+                    email = :email
+            ";
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue(':email', $this->user->getEmail());
-            $stmt->bindValue(':token', $token);
-            $stmt->bindValue(':expires_at', $expires_at);
+            $stmt->bindValue(':password', $this->user->getPassword());
+            return $stmt->execute();
 
-            $stmt->execute();
-
-            return true;
-        } catch (PDOException $e) {
-            error_log("addPasswordReset failed: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
-            throw $e;
+        } catch(PDOException $e) {
+            error_log("error updatePassword: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            return false;
         }
     }
 
