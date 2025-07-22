@@ -186,7 +186,7 @@ error_log("----------------------------------------------------------------\n");
 
                                     <div class='row'>
                                         <div class='label'>
-                                            <span class='a right normal url' data-url='a/recover' onclick='AP.toURL(Lang.getUrlWithSelectedLang("a/recover"));'>Forget your password?</span>
+                                            <span class='a right normal url' onclick="redirectToForgotPassword()">Forget your password?</span>
                                             Password
                                         </div>
                                         <div class='input'>
@@ -222,7 +222,7 @@ error_log("----------------------------------------------------------------\n");
                                             }
                                         </script>
                                     </div>
-                                    <a href="signup.php">Don't have an account? Sign up here</a>
+                                    <span class='a normal url' onclick="redirectToSignup()">Don't have an account? Sign up here</span>
                                 </div>
 
                             </form>
@@ -349,6 +349,7 @@ error_log("----------------------------------------------------------------\n");
                 'noUser': 'User not found',
                 'wrongPassword': 'Incorrect password',
                 'invalidCAPTCHA': 'Invalid CAPTCHA, please try again',
+                'resetLinkSent': 'Reset password email sent, please check your inbox and follow the instruction.',
                 'default': 'Login failed. Please try again.'
             };
 
@@ -371,6 +372,23 @@ error_log("----------------------------------------------------------------\n");
         if (savedValues.remember) {
             document.querySelector('input[name="remember"]').checked = true;
         }
+
+        function redirectToForgotPassword() {
+            // Get the email value from the form
+            const email = document.querySelector('input[name="email"]').value;
+
+            // Redirect to forgot password page with email as parameter
+            window.location.href = `ForgotPassword.php?email=${encodeURIComponent(email)}`;
+        }
+
+        function redirectToSignup() {
+            // Get the email value from the form
+            const email = document.querySelector('input[name="email"]').value;
+
+            // Redirect to forgot password page with email as parameter
+            window.location.href = `signup.php?email=${encodeURIComponent(email)}`;
+        }
+
 
     </script>
 

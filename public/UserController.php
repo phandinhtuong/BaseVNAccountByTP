@@ -328,7 +328,47 @@ class UserController
         }
     }
 
+    function checkEmail(): bool {
 
+        try {
+            $sql = "SELECT * FROM users WHERE email = :email";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':email', $this->user->getEmail());
+
+            $stmt->execute();
+
+            $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$userInfo) {
+                return false;
+            } else {
+                return true;
+            }
+
+        } catch(PDOException $e) {
+            error_log("error checkEmail: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            throw $e;
+        }
+    }
+
+    public function addPasswordReset(string $token, string $expires_at): bool{
+
+        try {
+            $sql = "INSERT INTO password_resets (email, token, expires_at) 
+                             VALUES (:email, :token, :expires_at)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':email', $this->user->getEmail());
+            $stmt->bindValue(':token', $token);
+            $stmt->bindValue(':expires_at', $expires_at);
+
+            $stmt->execute();
+
+            return true;
+        } catch (PDOException $e) {
+            error_log("addPasswordReset failed: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            throw $e;
+        }
+    }
 
 
 }

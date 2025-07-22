@@ -177,7 +177,8 @@ try {
                                         }
                                     </script>
                                 </div>
-                                <a href="login.php">Already had an account? Login here</a>
+                                <span class='a normal url' onclick="redirectToLogin()">Already had an account? Login here</span>
+
                             </div>
 
                         </form>
@@ -260,6 +261,18 @@ try {
     const urlParams = new URLSearchParams(window.location.search);
     const container = document.querySelector('.signup-container');
 
+    const email = urlParams.get('email');
+    window.history.replaceState({}, '', window.location.pathname);
+    if (email) {
+        document.querySelector('input[name="email"]').value  = decodeURIComponent(email);
+    }
+    function redirectToLogin() {
+        // Get the email value from the form
+        const email = document.querySelector('input[name="email"]').value;
+
+        // Redirect to forgot password page with email as parameter
+        window.location.href = `Login.php?email=${encodeURIComponent(email)}`;
+    }
 
     if (urlParams.has('error')) {
         const savedValues = {
