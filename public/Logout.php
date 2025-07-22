@@ -10,5 +10,5 @@ session_destroy();
 
 // Redirect to login page
 //header("Location: login.html?error=logout");
-header("Location: login.html");
+header("Location: login.php");
 exit();
