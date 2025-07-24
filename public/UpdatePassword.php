@@ -1,6 +1,7 @@
 <?php
 require "PasswordController.php";
 require "../class/User.php";
+require "../class/PasswordReset.php";
 require "UserController.php";
 
 
@@ -20,9 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //$stmt->execute([$token, $email]);
     //$reset = $stmt->fetch();
 
-    $passwordController = new PasswordController();
+    $passwordReset = new PasswordReset();
+    $passwordReset->setToken($token);
+    $passwordReset->setEmail($email);
 
-    $result = $passwordController->authPasswordToken($token);
+
+    $passwordController = new PasswordController($passwordReset);
+
+
+    $result = $passwordController->authPasswordToken();
 
 //    if (!$reset) {
 //        die("Invalid or expired reset token");
@@ -45,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Delete reset token
-    if ($passwordController->deletePasswordReset($token)) {
+    if ($passwordController->deletePasswordReset()) {
         error_log("delete token " . $token . " successfully");
     } else {
         error_log("delete token " . $token . " failed");

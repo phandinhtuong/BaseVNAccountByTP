@@ -1,6 +1,7 @@
 <?php
 
 require "PasswordController.php";
+require "../class/PasswordReset.php";
 
 if (empty($_GET['token'])) {
     die("Invalid reset token");
@@ -11,9 +12,13 @@ $token = $_GET['token'];
 //$stmt = $pdo->prepare("SELECT email FROM password_resets WHERE token = ? AND expires_at > NOW()");
 //$stmt->execute([$token]);
 //$reset = $stmt->fetch();
-$passwordController = new PasswordController();
 
-$result = $passwordController->authPasswordToken($token);
+$passwordReset = new PasswordReset();
+$passwordReset->setToken($token);
+
+$passwordController = new PasswordController($passwordReset);
+
+$result = $passwordController->authPasswordToken();
 
 if ($result == null) {
     die("Invalid or expired reset token");

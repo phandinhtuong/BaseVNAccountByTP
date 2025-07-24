@@ -4,21 +4,23 @@ require_once '../schema/DataAccess.php';
 
 class PasswordController
 {
+    private PasswordReset $passwordReset;
     private PDO $db;
 
-    public function __construct(){
+    public function __construct(PasswordReset $passwordReset){
+        $this->passwordReset = $passwordReset;
         $this->db = connectToDatabase();
     }
 
-    public function addPasswordReset(string $email, string $token, string $expires_at): bool{
+    public function addPasswordReset(): bool{
 
         try {
             $sql = "INSERT INTO password_resets (email, token, expires_at) 
                              VALUES (:email, :token, :expires_at)";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':email', $email);
-            $stmt->bindValue(':token', $token);
-            $stmt->bindValue(':expires_at', $expires_at);
+            $stmt->bindValue(':email', $this->passwordReset->getEmail());
+            $stmt->bindValue(':token', $this->passwordReset->getToken());
+            $stmt->bindValue(':expires_at', $this->passwordReset->getExpiresAt());
 
             $stmt->execute();
 
@@ -28,14 +30,14 @@ class PasswordController
             throw $e;
         }
     }
-    function authPasswordToken(string $token): ?array {
+    function authPasswordToken(): ?array {
 
         try {
 
             //$sql = "SELECT email FROM password_resets WHERE token = :token AND expires_at > NOW()";
             $sql = "SELECT email, expires_at FROM password_resets WHERE token = :token";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':token', $token);
+            $stmt->bindValue(':token', $this->passwordReset->getToken());
 
             $stmt->execute();
 
@@ -56,12 +58,12 @@ class PasswordController
         }
     }
 
-    public function deletePasswordReset(string $token): bool{
+    public function deletePasswordReset(): bool{
 
         try {
             $sql = "DELETE FROM password_resets WHERE token = :token";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':token', $token);
+            $stmt->bindValue(':token', $this->passwordReset->getToken());
 
             $stmt->execute();
 
