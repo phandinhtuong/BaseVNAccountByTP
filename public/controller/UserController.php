@@ -28,15 +28,6 @@ class UserController
     public function checkValidUserSignup(): array
     {
         try {
-            if (empty($this->user->getName())) {
-                $error = "nullName";
-                return ['success' => false, 'error' => $error];
-            }
-
-            if (empty($this->user->getUsername())) {
-                $error = "nullUsername";
-                return ['success' => false, 'error' => $error];
-            }
 
             if (empty($this->user->getEmail())) {
                 $error = "nullEmail";
@@ -46,11 +37,21 @@ class UserController
                 return ['success' => false, 'error' => $error];
             }
 
+            if (empty($this->user->getUsername())) {
+                $error = "nullUsername";
+                return ['success' => false, 'error' => $error];
+            }
+
             if (empty($this->user->getPassword())) {
                 $error = "nullPassword";
                 return ['success' => false, 'error' => $error];
             } elseif (strlen($this->user->getPassword()) < 8) {
                 $error = "weakPassword";
+                return ['success' => false, 'error' => $error];
+            }
+
+            if (empty($this->user->getName())) {
+                $error = "nullName";
                 return ['success' => false, 'error' => $error];
             }
 

@@ -9,6 +9,8 @@ if (!isset($_SESSION['failed_attempts'])) {
     $_SESSION['failed_attempts'] = 0;
 }
 
+include('view/commonView.html');
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +22,9 @@ if (!isset($_SESSION['failed_attempts'])) {
     <link rel="stylesheet" type="text/css" href="../css/css2.css">
     <link rel="stylesheet" type="text/css" href="../css/css3.css">
     <link rel="stylesheet" type="text/css" href="../css/inputCSS.css">
+    <link rel="stylesheet" type="text/css" href="../css/captcha.css">
 
+    <script type="text/javascript" src="../js/commonJS.js"></script>
     <script type="text/javascript" src="../js/LoginJS.js"></script>
 
 </head>
@@ -44,7 +48,7 @@ if (!isset($_SESSION['failed_attempts'])) {
                                     <div class='row'>
                                         <div class='label'>Email</div>
                                         <div class='input'>
-                                            <input type='text' name='email' placeholder='Your email'>
+                                            <input type='text' name='email' required placeholder='Your email'>
                                         </div>
                                     </div>
 
@@ -54,7 +58,7 @@ if (!isset($_SESSION['failed_attempts'])) {
                                             Password
                                         </div>
                                         <div class='input'>
-                                            <input type='password' id='password' name='password' placeholder='Your password'>
+                                            <input type='password' id='password' required name='password' placeholder='Your password'>
                                             <span class="password-toggle" onclick="hideShowPasswords()"><i class="show-icon">🔓</i></span>
                                         </div>
                                     </div>
@@ -69,6 +73,7 @@ if (!isset($_SESSION['failed_attempts'])) {
                                                 </a>
                                             </div>
                                             <input type="text" name="captcha" required>
+
                                         </div>
                                     <?php endif; ?>
 
@@ -78,13 +83,6 @@ if (!isset($_SESSION['failed_attempts'])) {
                                         </div>
                                         <div class='submit' onclick="submitForm()">Login</div>
                                         <button type="submit" name="login-submit" style="display: none;">Login</button>
-                                        <script>
-                                            function submitForm() {
-                                                const form = document.getElementById("loginForm");
-                                                let submitButton = form.querySelector("[type=submit]");
-                                                submitButton.click();
-                                            }
-                                        </script>
                                     </div>
                                     <span class='a normal url' onclick="redirectToSignup()">Don't have an account? Sign up here</span>
                                 </div>
@@ -98,36 +96,7 @@ if (!isset($_SESSION['failed_attempts'])) {
         </div>
     </div>
 
-    <div id="errorModal" style="width: 480px; display: none;">
-        <div class="__wtdialog __apalert __dialog __dialog_ontop" id="__apdialog_alert" style="">
-            <div class="__dialogwrapper" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto;">
-                <div class="__dialogwrapper-inner">
-                    <div class="__dialogmain">
-                        <div class="__dialogclose" onclick="hideErrorModal()">
-                            <span class="-ap icon-close"/>
-                        </div>
-                        <div class="__dialogcontent">
-                            <div id="alert" style="" class="__apdialog" title="">
-                                <table>
-                                    <tbody>
-                                    <tr>
-                                        <td class="icon">
-                                            <span class="-ap icon-help-with-circle" style="font-size:40px; color:#666"></span>
-                                        </td>
-                                        <td class="text" id="errorMessage"></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="__dialogbuttons unselectable" onclick="hideErrorModal()">
-                            <div class="button er alert-button" >OK</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <script>
         displayError();

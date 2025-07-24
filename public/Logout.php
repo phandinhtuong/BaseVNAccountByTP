@@ -33,5 +33,5 @@ endLog("success","logout");
 
 // Redirect to login page
 //header("Location: login.php?error=logout");
-header("Location: login.php");
+header("Location: Login.php");
 exit();

@@ -26,6 +26,8 @@ $result = $passwordController->authPasswordToken();
     <link rel="stylesheet" type="text/css" href="../../css/css2.css">
     <link rel="stylesheet" type="text/css" href="../../css/css3.css">
     <link rel="stylesheet" type="text/css" href="../../css/inputCSS.css">
+    <script type="text/javascript" src="../../js/commonJS.js"></script>
+
 </head>
 <body>
     <a href="../../index.html">Home</a>
@@ -119,20 +121,6 @@ $result = $passwordController->authPasswordToken();
                                         validatePasswordMatch();
                                     });
 
-                                    function togglePasswordVisibility(inputId) {
-                                        const input = document.getElementById(inputId);
-                                        const toggle = input.nextElementSibling.querySelector('i');
-
-                                        if (input.type === 'password') {
-                                            input.type = 'text';
-                                            toggle.textContent = '🔒'; // Or change icon class for Font Awesome
-                                            toggle.title = 'Hide password';
-                                        } else {
-                                            input.type = 'password';
-                                            toggle.textContent = '🔓'; // Or change icon class for Font Awesome
-                                            toggle.title = 'Show password';
-                                        }
-                                    }
 
                                     function hideShowPasswords(){
                                         togglePasswordVisibility('password');

@@ -27,6 +27,7 @@ try {
         $user->setPassword($_POST['password']);
         $show_captcha = $_SESSION['failed_attempts'] >= numberOfFailedLoginsToShowCaptcha;
         $remember = isset($_POST['remember']);
+        $remembered = $_POST['remembered'] ?? "";
 
         // CAPTCHA verification if needed
         if ($show_captcha) {
@@ -72,7 +73,7 @@ try {
                     } else {
                         endLog("user ". $result['user']->getUsername() . "save token error", "login controller");
                         header("Location: ../Login.php?error=".$result['error']
-                            ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
+                            ."&email=".urlencode($_POST['email'])."&remember=".urlencode($remembered));
                         exit();
                     }
                 }
@@ -83,13 +84,13 @@ try {
                 $_SESSION['failed_attempts']++;
                 endLog("Login error: email: ".$_POST['email'] . ", error:" . $result['error'], "login controller");
                 header("Location: ../Login.php?error=".$result['error']
-                    ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
+                    ."&email=".urlencode($_POST['email'])."&remember=".urlencode($remembered));
                 exit();
             }
         } else {
             endLog("Login error: email: ".$_POST['email'] . ", error:" . $error, "login controller");
             header("Location: ../Login.php?error=".$error
-                ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
+                ."&email=".urlencode($_POST['email'])."&remember=".urlencode($remembered));
             exit();
         }
     }
