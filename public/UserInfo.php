@@ -142,7 +142,7 @@ endLog("success", "userinfo");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link rel="stylesheet" type="text/css" href="cssForUserInfoDemo2_new.css">
+    <link rel="stylesheet" type="text/css" href="../css/userinfo.css">
     <link rel="stylesheet" type="text/css" href="../css/editProfile.css">
 
     <script>
