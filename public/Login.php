@@ -2,7 +2,8 @@
 
 require_once "../logging/logByTP.php";
 require "../class/User.php";
-require "UserController.php";
+require "controller/UserController.php";
+require_once '../schema/Config.php';
 
 session_start();
 beginLog("login");
@@ -30,17 +31,11 @@ function generateToken(): string
 try {
     if (isset($_POST['login-submit'])) {
 
-        //$db = connectToDatabase();
-
-        // Get form data
-        //$userInput = trim($_POST['email']);
-        //$password = $_POST['password'];
-
         $user = new User();
 
         $user->setEmail($_POST['email']);
         $user->setPassword($_POST['password']);
-        $show_captcha = $_SESSION['failed_attempts'] >= 3;
+        $show_captcha = $_SESSION['failed_attempts'] >= numberOfFailedLoginsToShowCaptcha;
         $remember = isset($_POST['remember']);
 
         // CAPTCHA verification if needed
@@ -51,15 +46,10 @@ try {
                 $_SESSION['failed_attempts']++;
             }
         }
+
         if (!isset($error)) {
             $userController = new UserController($user);
 
-
-            // Validate inputs
-            //if (empty($userInput) || empty($password)) {
-            //    header("Location: login.php?error=emptyfields");
-            //    exit();
-            //}
             $result = $userController->login();
 
             if ($result['success']) {
@@ -71,17 +61,17 @@ try {
 
                 if ($remember) {
                     $token = generateToken();
-                    $expires = date('Y-m-d H:i:s', strtotime('+7 days'));
+                    $expires = date('Y-m-d H:i:s', strtotime('+'.numberOfDaysRemainingLogins.' days'));
 
 
-                    if ($userController->saveToken($token,$expires)) {
+                    if ($userController->saveToken()) {
                         error_log("user ". $result['user']->getUsername() . " save token successfully: ".$token . ", expires " . $expires);
                         // Set cookie (secure, HttpOnly, SameSite)
                         setcookie(
                             'remember',
                             $_SESSION['username'] . ':' . $token,
                             [
-                                'expires' => strtotime('+7 days'),
+                                'expires' => strtotime('+'.numberOfDaysRemainingLogins.' days'),
                                 'path' => '/',
                                 'secure' => true, // HTTPS only
                                 'httponly' => true,
@@ -100,9 +90,6 @@ try {
                 header("Location: UserInfo.php");
                 exit();
             } else {
-    //            foreach ($result['errors'] as $error) {
-    //                echo "<p style='color:red;'>$error</p>";
-    //            }
                 $_SESSION['failed_attempts']++;
                 endLog("Login error: email: ".$_POST['email'] . ", error:" . $result['error'], "login");
                 header("Location: login.php?error=".$result['error']
@@ -137,22 +124,6 @@ endLog("success","login");
 <body>
     <a href="../index.html">Home</a>
     <div class="login-container">
-<!--        <h1>let's login</h1>-->
-<!--        <form action="Login.php" method="post">-->
-
-<!--            <label>email</label>-->
-<!--            <label>-->
-<!--                <input type="email" name="email">-->
-<!--            </label>-->
-<!--            <br>-->
-
-<!--            <label>password</label>-->
-<!--            <label>-->
-<!--                <input type="password" name="password">-->
-<!--            </label>-->
-<!--            <br>-->
-<!--            <button type="submit" name="login-submit">Login</button>-->
-<!--        </form>-->
         <div id='master' class='wf'>
             <div id='page'>
                 <div id='auth' class='scrollable' data-autoscroll='1' data-autohide='1'>
@@ -184,7 +155,7 @@ endLog("success","login");
                                         </div>
                                     </div>
 
-                                    <?php if ($_SESSION['failed_attempts'] >= 3): ?>
+                                    <?php if ($_SESSION['failed_attempts'] >= numberOfFailedLoginsToShowCaptcha): ?>
                                         <div class="captcha-group">
                                             <label>Enter the text from the image:</label>
                                             <div class="captcha-image">
@@ -201,7 +172,6 @@ endLog("success","login");
                                         <div class='checkbox'>
                                             <input type='checkbox' id="remember" name='remember'>&nbsp;Keep me logged in
                                         </div>
-<!--                                        <div class='submit' onclick='Account.login(this);'>Login</div>-->
                                         <div class='submit' onclick="submitForm()">Login</div>
                                         <button type="submit" name="login-submit" style="display: none;">Login</button>
                                         <script>
@@ -224,24 +194,6 @@ endLog("success","login");
         </div>
     </div>
 
-<!--    <div style="margin-top: 15px; text-align: center;">-->
-<!--        <a href="signup.html">Don't have an account? Register here</a>-->
-<!--    </div>-->
-
-    <!-- Error Popup (similar style to editModal) -->
-<!--    <div id="errorModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index: 1000;">-->
-<!--        <div style="background-color:white; margin:100px auto; padding:20px; width:80%; max-width:500px; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1);">-->
-<!--            <span style="float:right; cursor:pointer; font-size:24px;" onclick="hideErrorModal()">×</span>-->
-<!--            <h2 style="color:#d33; margin-top:0;">Error</h2>-->
-<!--            <div id="errorMessage" style="margin:20px 0; color:#555;">-->
-<!--                &lt;!&ndash; Error message will be inserted here &ndash;&gt;-->
-<!--            </div>-->
-<!--            <div style="text-align:center;">-->
-<!--                <button onclick="hideErrorModal()" style="background:#d33; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">OK</button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
     <div id="errorModal" style="width: 480px; display: none;">
         <div class="__wtdialog __apalert __dialog __dialog_ontop" id="__apdialog_alert" style="">
             <div class="__dialogwrapper" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto;">
@@ -256,7 +208,7 @@ endLog("success","login");
                                     <tbody>
                                     <tr>
                                         <td class="icon">
-                                            <span class="-ap icon-help-with-circle" style="font-size:40px; color:#666"/>
+                                            <span class="-ap icon-help-with-circle" style="font-size:40px; color:#666"></span>
                                         </td>
                                         <td class="text" id="errorMessage"></td>
                                     </tr>
@@ -341,12 +293,12 @@ endLog("success","login");
                 'invalidCAPTCHA': 'Invalid CAPTCHA, please try again',
                 'resetLinkSent': 'Reset password email sent, please check your inbox and follow the instruction.',
                 'updatePasswordSuccessfully': 'Update password successfully.',
+                'invalidResetToken': 'Invalid reset token.',
+                'expiredResetToken': 'Expired reset token.',
                 'default': 'Login failed. Please try again.'
             };
 
             const errorCode = urlParams.get('error');
-            //errorDiv.textContent = errorMessages[errorCode] || errorMessages['default'];
-            //container.prepend(errorDiv);
             showErrorModal(errorMessages[errorCode] || errorMessages['default']);
         }
 
@@ -369,7 +321,7 @@ endLog("success","login");
             const email = document.querySelector('input[name="email"]').value;
 
             // Redirect to forgot password page with email as parameter
-            window.location.href = `ForgotPassword.php?email=${encodeURIComponent(email)}`;
+            window.location.href = `reset/ForgotPassword.php?email=${encodeURIComponent(email)}`;
         }
 
         function redirectToSignup() {

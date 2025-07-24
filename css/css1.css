@@ -57,7 +57,7 @@ html, body{
 }
 .invisible, .ap-invisible {
     opacity:0;
-    filter:alpha(opacity=0));
+    filter:alpha(opacity=0);
 }
 .textleft, .ap-textleft {
     text-align: left;
@@ -1835,7 +1835,7 @@ em{
 	left: 0;
 	position: absolute;
 	opacity: 0;
-	filter:Alpha(Opacity=0); /* support: IE8 */
+	filter:Alpha(Opacity=0); /* support: IE8
 }
 .ui-front {
     z-index: 100;
@@ -1952,7 +1952,7 @@ em{
     -ms-touch-action: none;
     touch-action: none;
 }
-.ui-datepicker {width: 18.5em; padding: 1px; display: none; background-color: #fff; border:1px solid #d3d3d3; shadow:3px #eee; margin-top:5px; margin-left:-9px; @xo}
+.ui-datepicker {width: 18.5em; padding: 1px; display: none; background-color: #fff; border:1px solid #d3d3d3; shadow:3px #eee; margin-top:5px; margin-left:-9px; }
 .ui-datepicker .ui-datepicker-header { position:relative; padding:6px 0; background-color: #f4f4f4;
     font-size:11px;
     font-weight:bold;
@@ -1979,7 +1979,7 @@ em{
 .ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
 .ui-datepicker th {padding: .7em .3em; text-align: center; font-weight: bold; border: 0; color:#555; background-color: #f9f9f9; border-top:1px solid #ddd; border-bottom:1px solid #eee;}
 .ui-datepicker th span{color:#198700;
-    font-size:12px; @normal}
+    font-size:12px; }
 .ui-datepicker td { border: 0; padding: 1px;}
 .ui-datepicker td span, .ui-datepicker td a {
     font-size:16px;
@@ -2263,18 +2263,18 @@ a.ui-button:active,
 .ui-widget-content .ui-priority-secondary,
 .ui-widget-header .ui-priority-secondary {
 	opacity: .7;
-	filter:Alpha(Opacity=70); /* support: IE8 */
+	filter:Alpha(Opacity=70);
 font-weight: normal;
 }
 .ui-state-disabled,
 .ui-widget-content .ui-state-disabled,
 .ui-widget-header .ui-state-disabled {
     opacity: .35;
-    filter:Alpha(Opacity=35); /* support: IE8 */
+    filter:Alpha(Opacity=35);
     background-image: none;
 }
 .ui-state-disabled .ui-icon {
-    filter:Alpha(Opacity=35); /* support: IE8 - See #6059 */
+    filter:Alpha(Opacity=35);
 }
 /* Icons
 /* states and images */

@@ -1,7 +1,7 @@
 <?php
 
-require_once '../schema/DataAccess.php';
-require_once "../logging/logByTP.php";
+require_once '../../schema/DataAccess.php';
+require_once "../../logging/logByTP.php";
 
 class PasswordController
 {
@@ -43,9 +43,6 @@ class PasswordController
             $stmt->execute();
 
             $reset = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            error_log("reset email = ".$reset['email']);
-            error_log("reset expires_at = ".$reset['expires_at']);
 
             if (!$reset) {
                 return null;

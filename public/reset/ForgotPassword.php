@@ -1,6 +1,6 @@
 <?php
 
-require_once "../logging/logByTP.php";
+require_once "../../logging/logByTP.php";
 
 
 beginLog("ForgotPassword");
@@ -13,36 +13,20 @@ endLog("Success", "ForgotPassword");
 <head>
     <meta charset="UTF-8">
     <title>Forgot Password</title>
-    <link rel="stylesheet" type="text/css" href="../css/css1.css">
-    <link rel="stylesheet" type="text/css" href="../css/css2.css">
-    <link rel="stylesheet" type="text/css" href="../css/css3.css">
+    <link rel="stylesheet" type="text/css" href="../../css/css1.css">
+    <link rel="stylesheet" type="text/css" href="../../css/css2.css">
+    <link rel="stylesheet" type="text/css" href="../../css/css3.css">
 </head>
 <body>
-    <a href="../index.html">Home</a>
+    <a href="../../index.html">Home</a>
     <div class="login-container">
-        <!--        <h1>let's login</h1>-->
-        <!--        <form action="Login.php" method="post">-->
-
-        <!--            <label>email</label>-->
-        <!--            <label>-->
-        <!--                <input type="email" name="email">-->
-        <!--            </label>-->
-        <!--            <br>-->
-
-        <!--            <label>password</label>-->
-        <!--            <label>-->
-        <!--                <input type="password" name="password">-->
-        <!--            </label>-->
-        <!--            <br>-->
-        <!--            <button type="submit" name="login-submit">Login</button>-->
-        <!--        </form>-->
         <div id='master' class='wf'>
             <div id='page'>
                 <div id='auth' class='scrollable' data-autoscroll='1' data-autohide='1'>
                     <div class='box-wrap'>
                         <div class='auth-logo'>
-                            <a href='../index.html'>
-                                <img src='../images/logo.full.png'/>
+                            <a href='../../index.html'>
+                                <img src='../../images/logo.full.png'/>
                             </a>
                         </div>
                         <div class='box'>
@@ -74,7 +58,7 @@ endLog("Success", "ForgotPassword");
                                             }
                                         </script>
                                     </div>
-                                    <a href="signup.php" class='a normal url'>Don't have an account? Sign up here</a>
+                                    <a href="../Signup.php" class='a normal url'>Don't have an account? Sign up here</a>
 
 
                                 </div>
@@ -132,7 +116,7 @@ endLog("Success", "ForgotPassword");
             const email = document.querySelector('input[name="email"]').value;
 
             // Redirect to forgot password page with email as parameter
-            window.location.href = `Login.php?email=${encodeURIComponent(email)}`;
+            window.location.href = `../Login.php?email=${encodeURIComponent(email)}`;
         }
 
         function showErrorModal(message) {
@@ -171,8 +155,6 @@ endLog("Success", "ForgotPassword");
             };
 
             const errorCode = urlParams.get('error');
-            //errorDiv.textContent = errorMessages[errorCode] || errorMessages['default'];
-            //container.prepend(errorDiv);
             showErrorModal(errorMessages[errorCode] || errorMessages['default']);
         }
 

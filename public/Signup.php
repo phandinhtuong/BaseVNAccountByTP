@@ -3,11 +3,10 @@
 session_start();
 
 require "../class/User.php";
-require "UserController.php";
+require "controller/UserController.php";
 require_once "../logging/logByTP.php";
 
 beginLog("signup");
-
 
 try {
     if (isset($_POST['signup'])) {
@@ -21,11 +20,8 @@ try {
 
         $userController = new UserController($user);
 
-
-        //$errors = $userController->checkValidUserSignup();
         $result = $userController->checkValidUserSignup();
 
-        //if (empty($errors)) {
         if ($result['success']) {
 
             if ($userController->signup()){
@@ -35,7 +31,6 @@ try {
             };
 
         } else {
-
             endLog("Location: signup.php?error=".$result['error']
                 ."&name=".urlencode($_POST['name'])
                 ."&username=".urlencode($_POST['username'])
@@ -46,15 +41,8 @@ try {
                         ."&username=".urlencode($_POST['username'])
                         ."&email=".urlencode($_POST['email']));
             exit();
-
         }
-
     }
-//    else {
-//        error_log("signup:  not found");
-//        echo 'Error, please try again later';
-//    }
-
 } catch (PDOException $e) {
     logException("signup", $e);
     endLog("error", "signup");
@@ -71,39 +59,13 @@ try {
     <link rel="stylesheet" type="text/css" href="../css/css1.css">
     <link rel="stylesheet" type="text/css" href="../css/css2.css">
     <link rel="stylesheet" type="text/css" href="../css/css3.css">
+    <link rel="stylesheet" type="text/css" href="../css/inputCSS.css">
 
 
 </head>
 <body>
 <a href="../index.html">Home</a>
 <div class="signup-container">
-    <!--        <h1>let's signup</h1>-->
-    <!--        <form action="Signup.php" method="post">-->
-    <!--            <label>name</label>-->
-    <!--            <label>-->
-    <!--                <input type="text" name="name">-->
-    <!--            </label>-->
-    <!--            <br>-->
-
-    <!--            <label>username</label>-->
-    <!--            <label>-->
-    <!--                <input type="text" name="username">-->
-    <!--            </label>-->
-    <!--            <br>-->
-
-    <!--            <label>email</label>-->
-    <!--            <label>-->
-    <!--                <input type="email" name="email">-->
-    <!--            </label>-->
-    <!--            <br>-->
-
-    <!--            <label>pass</label>-->
-    <!--            <label>-->
-    <!--                <input type="password" name="password">-->
-    <!--            </label>-->
-    <!--            <br>-->
-    <!--            <button type="submit" name="signup">Register</button>-->
-    <!--        </form>-->
     <div id='master' class='wf'>
         <div id='page'>
             <div id='auth' class='scrollable' data-autoscroll='1' data-autohide='1'>
@@ -130,7 +92,16 @@ try {
                                         Password
                                     </div>
                                     <div class='input'>
-                                        <input type='password' id='login-password' name='password' placeholder='Your password'>
+                                        <input type='password' id='password' name='password' required minlength="8" placeholder='Your password'>
+                                        <span class="password-toggle" onclick="hideShowPasswords()"><i class="show-icon">🔓</i></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class='label'>Confirm Password</div>
+                                    <div class='input'>
+                                        <input type='password' id="confirm_password" name='confirm_password' required minlength="8" placeholder='Confirm your password'>
+                                        <span class="password-toggle" onclick="hideShowPasswords()"><i class="show-icon">🔓</i></span>
                                     </div>
                                 </div>
 
@@ -149,8 +120,6 @@ try {
                                 </div>
 
                                 <div class='row relative xo'>
-
-                                    <!--                                        <div class='submit' onclick='Account.login(this);'>Login</div>-->
                                     <div class='submit' onclick="submitForm()">Sign up</div>
                                     <button type="submit" name="signup" style="display: none;">Sign up</button>
                                     <script>
@@ -206,22 +175,6 @@ try {
 </div>
 
 <script>
-
-    //window.addEventListener('load', positionDialog);
-    // if (document.readyState === 'loading') {
-    //     window.addEventListener('load', positionDialog);
-    //
-    //     console.log("loading");
-    // } else {
-    //     console.log("loaded");
-    //     positionDialog(); // DOM already ready
-    // }
-    // window.addEventListener('resize', positionDialog);
-
-
-    // Show error modal with custom message
-
-
     // Hide error modal
     function hideErrorModal() {
         document.getElementById('errorModal').style.display = 'none';
@@ -298,14 +251,29 @@ try {
         };
 
         const errorCode = urlParams.get('error');
-        //errorDiv.textContent = errorMessages[errorCode] || errorMessages['default'];
-        //container.prepend(errorDiv);
         showErrorModal(errorMessages[errorCode] || errorMessages['default']);
 
 
 
+    }
+    function togglePasswordVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        const toggle = input.nextElementSibling.querySelector('i');
 
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggle.textContent = '🔒'; // Or change icon class for Font Awesome
+            toggle.title = 'Hide password';
+        } else {
+            input.type = 'password';
+            toggle.textContent = '🔓'; // Or change icon class for Font Awesome
+            toggle.title = 'Show password';
+        }
+    }
 
+    function hideShowPasswords(){
+        togglePasswordVisibility('password');
+        togglePasswordVisibility('confirm_password')
     }
 
 </script>

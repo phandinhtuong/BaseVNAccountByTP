@@ -1,12 +1,10 @@
 <?php
 
 require "../class/User.php";
-require "UserController.php";
+require "controller/UserController.php";
 require_once "../logging/logByTP.php";
 
 session_start();
-
-
 beginLog("logout");
 
 if (!empty($_SESSION['username'])) {

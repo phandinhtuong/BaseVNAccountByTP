@@ -1,13 +1,9 @@
 <?php
 require "../class/User.php";
-//require_once "UserController.php";
 require_once "auth.php";
 require_once "../logging/logByTP.php";
 
-// Start the session
-//session_start();
 beginLog("userinfo");
-
 
 // Check if user is logged in
 if (!isset($_SESSION['username'])) {
@@ -23,9 +19,7 @@ if (empty($_SESSION['csrf_token'])) {
 // Get the username from session
 $username = $_SESSION['username'];
 
-
 try {
-
     error_log("session csrf token = " . $_SESSION['csrf_token']);
 
     $user = new User();
@@ -65,20 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         error_log("year = " . $year);
 
         if ($day && $month && $year && checkdate($month, $day, $year)) {
-            // Create a DateTime object
-            //$dob = new DateTime("$year-$month-$day");
             $dob = "$year-$month-$day";
-
-            //echo "<p><strong>Date of Birth:</strong> " . $dob->format('F j, Y') . "</p>";
-
         }
 
         $profilePictureBase64 = null;
-//        if (isset($_FILES['profile_picture'])) {
-//            error_log("profile pic ok 00");
-//        } else{
-//            error_log("profile pic oang 00");
-//        }
 
         if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
             error_log("profile pic ok ");
@@ -91,9 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                 $profilePictureBase64 = 'data:image/' . $file_ext . ';base64,' . base64_encode($file_content);
             }
         }
-//        else {
-//            error_log("profile pic oang ");
-//        }
 
         $newUser = new User();
         $newUser->setFirstName($_POST['firstName'] ?? $user->getFirstName());
@@ -105,19 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         $newUser->setDob($dob ?? $user->getDob());
         $newUser->setPhoneNumber($_POST['phoneNumber'] ?? $user->getPhoneNumber());
         $newUser->setAddress($_POST['address'] ?? $user->getAddress());
-
-//        $newData = [
-//            'firstName' => $_POST['firstName'] ?? $user->getFirstName(),
-//            'lastName' => $_POST['lastName'] ?? $user->getLastName(),
-//            'name' => $_POST['firstName'] . " " . $_POST['lastName'] ?? $user->getName(),
-//            'jobTitle' => $_POST['jobTitle'] ?? $user->getJobTitle(),
-//            'companyName' => $_POST['companyName'] ?? $user->getCompanyName(),
-//            'profile_picture' => $profilePictureBase64 ?? $user->getProfilePicture(),
-//            'dob' => $dob ?? $user->getDob(),
-//            'phoneNumber' => $_POST['phoneNumber'] ?? $user->getPhoneNumber(),
-//            'address' => $_POST['address'] ?? $user->getAddress(),
-//        ];
-
 
         if ($userController->update_profile($newUser)) {
             // Refresh user info
@@ -188,14 +156,11 @@ endLog("success", "userinfo");
         <!-- Profile Section -->
         <div class="bg-white mx-4 mt-6 rounded-lg p-6">
             <div class="flex items-start">
-<!--                <img src="../images/logo.full.png" alt="Profile" class="w-20 h-20 rounded-full object-cover mr-6">-->
-
                 <?php if (!empty($user->getProfilePicture())): ?>
                     <img src="<?php echo htmlspecialchars($user->getProfilePicture()); ?>" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover mr-6">
                 <?php else: ?>
                     <img src="../images/default-avatar.jpg" alt="Default Profile Picture" class="w-20 h-20 rounded-full object-cover mr-6">
                 <?php endif; ?>
-
 
                 <div class="flex-1">
                     <h2 class="text-2xl font-semibold text-gray-900 mb-1"><?php echo htmlspecialchars($user->getName() ?? ''); ?></h2>
@@ -241,28 +206,12 @@ endLog("success", "userinfo");
 
             </div>
 
-            <!--        <div class="flex items-start">-->
-            <!--            <h3 class="text-gray-400 uppercase tracking-wide text-sm font-medium mb-4">CONTACT INFO</h3>-->
-
-            <!--        </div>-->
-            <!--        <div class="flex items-start" >-->
-            <!--            <div class="bg-white rounded-lg p-6 text-sm">-->
-            <!--                <div class="flex">-->
-            <!--                    <span class="text-gray-500 w-24 flex-shrink-0">Address</span>-->
-            <!--                    <span class="text-gray-900">387 Vu Tong Phan Thanh Xuân, Hà Nội</span>-->
-            <!--                </div>-->
-            <!--            </div>-->
-            <!--        </div>-->
-
         </div>
 
     </div>
 
 
-
-
     <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
-
 
         <div style="background-color:white; margin:100px auto; width:80%; max-width:700px;">
             <div style="background-color:#EFEFEF; padding:10px;">
@@ -343,7 +292,6 @@ endLog("success", "userinfo");
                             <option value="" selected disabled>Day</option>
                             <script>
                                 const storedDay = <?php echo $user->getDob() ? (int)date('d', strtotime($user->getDob())) : 'null' ?>;
-                                // Populate days (1-31)
                                 for (let i = 1; i <= 31; i++) {
                                     const selected = storedDay === i ? ' selected' : '';
                                     document.write('<option value="' + i + '"' + selected + '>' + i + '</option>');
@@ -351,21 +299,15 @@ endLog("success", "userinfo");
                             </script>
                         </select>
 
-                        <!-- Month dropdown -->
                         <select id="month" name="month" required>
                             <option value="" selected disabled>Month</option>
                             <script>
-                                // Get stored month from PHP
                                 const storedMonth = <?php echo $user->getDob() ? (int)date('m', strtotime($user->getDob())) : 'null' ?>;
-
-                                // Month names array
                                 const months = [
                                     [1, 'January'], [2, 'February'], [3, 'March'], [4, 'April'],
                                     [5, 'May'], [6, 'June'], [7, 'July'], [8, 'August'],
                                     [9, 'September'], [10, 'October'], [11, 'November'], [12, 'December']
                                 ];
-
-                                // Populate months
                                 months.forEach(([num, name]) => {
                                     const selected = storedMonth === num ? ' selected' : '';
                                     document.write('<option value="' + num + '"' + selected + '>' + name + '</option>');
@@ -373,15 +315,11 @@ endLog("success", "userinfo");
                             </script>
                         </select>
 
-                        <!-- Year dropdown -->
                         <select id="year" name="year" required>
                             <option value="" selected disabled>Year</option>
                             <script>
-                                // Get stored year from PHP
                                 const storedYear = <?php echo $user->getDob() ? (int)date('Y', strtotime($user->getDob())) : 'null' ?>;
                                 const currentYear = new Date().getFullYear();
-
-                                // Populate years (current year to 1900)
                                 for (let i = currentYear; i >= 1900; i--) {
                                     const selected = storedYear === i ? ' selected' : '';
                                     document.write('<option value="' + i + '"' + selected + '>' + i + '</option>');
@@ -416,7 +354,6 @@ endLog("success", "userinfo");
                     <button type="submit" class="btn-update" name="update_profile">Update</button>
                 </div>
             </form>
-
 
         </div>
     </div>

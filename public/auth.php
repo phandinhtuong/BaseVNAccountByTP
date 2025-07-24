@@ -1,5 +1,5 @@
 <?php
-require "UserController.php";
+require "controller/UserController.php";
 require_once "../logging/logByTP.php";
 session_start();
 beginLog("auth");
@@ -33,7 +33,7 @@ function authenticateUser()
 
     endLog("Not authenticated", "auth");
     // Not authenticated
-    header('Location: login.php');
+    header('Location: Login.php');
     exit;
 }
 

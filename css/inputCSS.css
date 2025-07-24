@@ -1,0 +1,17 @@
+.input {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* If using Font Awesome instead of emoji */
+.show-icon {
+    font-style: normal;
+}

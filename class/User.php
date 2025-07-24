@@ -16,6 +16,8 @@ class User
     private string $managers;
     private string $address;
     private string $profile_picture;
+    private string $login_token;
+    private string $login_token_expires;
     private string $created_at;
 
     public function __construct()
@@ -263,6 +265,39 @@ class User
     {
         $this->profile_picture = $profile_picture;
     }
+
+    /**
+     * @return string
+     */
+    public function getLoginToken(): string
+    {
+        return $this->login_token;
+    }
+
+    /**
+     * @param string $login_token
+     */
+    public function setLoginToken(string $login_token): void
+    {
+        $this->login_token = $login_token;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginTokenExpires(): string
+    {
+        return $this->login_token_expires;
+    }
+
+    /**
+     * @param string $login_token_expires
+     */
+    public function setLoginTokenExpires(string $login_token_expires): void
+    {
+        $this->login_token_expires = $login_token_expires;
+    }
+
 
     public function hashPassword(): void
     {

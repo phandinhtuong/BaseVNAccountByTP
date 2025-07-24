@@ -1,11 +1,12 @@
 <?php
-require '../vendor/autoload.php'; // Include PHPMailer
+require '../../vendor/autoload.php'; // Include PHPMailer
 
-require "../class/User.php";
-require "../class/PasswordReset.php";
-require "UserController.php";
-require "PasswordController.php";
-require_once "../logging/logByTP.php";
+require "../../class/User.php";
+require "../../class/PasswordReset.php";
+require "../controller/UserController.php";
+require "../controller/PasswordController.php";
+require_once "../../logging/logByTP.php";
+require_once "../../schema/Config.php";
 
 beginLog("send reset link");
 
@@ -22,11 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($userController->checkEmail()) {
         // Generate token
         $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $expires = date('Y-m-d H:i:s', strtotime('+'.numberOfHoursResetTokenExpires.' hour'));
 
-        // Store in database
-//        $stmt = $pdo->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
-//        $stmt->execute([$email, $token, $expires]);
         $passwordReset = new PasswordReset();
         $passwordReset->setEmail($email);
         $passwordReset->setToken($token);
@@ -36,10 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $passwordController->addPasswordReset();
 
         // Send email
-        $resetLink = "http://localhost:8080/public/ResetPassword.php?token=$token";
-        $subject = "Password Reset Request";
+        $resetLink = linkWebsite . "reset/ResetPassword.php?token=$token";
+        $subject = resetPasswordMailSubject;
         $message = "Click this link to reset your password: $resetLink\n\n";
-        $message .= "This link will expire in 1 hour.";
+        $message .= "This link will expire in ".numberOfHoursResetTokenExpires." hour(s).";
 
         try {
             if (!sendEmail($email, $subject, $message)) {
@@ -59,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $error = "resetLinkSent";
-        error_log("Location: Login.php?error=".$error."&email=".urlencode($_POST['email']));
-        header("Location: Login.php?error=".$error."&email=".urlencode($_POST['email']));
+        error_log("Location: ../Login.php?error=".$error."&email=".urlencode($_POST['email']));
+        header("Location: ../Login.php?error=".$error."&email=".urlencode($_POST['email']));
     } else {
         $error = "emailNotFound";
         error_log("Location: ForgotPassword.php?error=".$error
@@ -78,14 +76,14 @@ function sendEmail($to, $subject, $message) : bool {
 
     $mail = new PHPMailer\PHPMailer\PHPMailer();
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com'; // Your SMTP server
+    $mail->Host = mailHost;
     $mail->SMTPAuth = true;
-    $mail->Username = 'tanftanf01@gmail.com';
-    $mail->Password = 'qfpn scub tnfs ptsx'; // Use app password for Gmail
-    $mail->SMTPSecure = 'tls';
-    $mail->Port = 587;
+    $mail->Username = mailSenderUsername;
+    $mail->Password = mailSenderAppPassword; // app password for Gmail
+    $mail->SMTPSecure = mailSMTPSecure;
+    $mail->Port = mailPort;
 
-    $mail->setFrom('tanftanf01@email.com', 'tan tan here');
+    $mail->setFrom(mailSenderUsername, mailSenderName);
     $mail->addAddress($to);
     $mail->Subject = $subject;
     $mail->Body = $message;

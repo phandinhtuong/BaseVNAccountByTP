@@ -1,8 +1,8 @@
 <?php
-require "PasswordController.php";
-require "../class/User.php";
-require "../class/PasswordReset.php";
-require "UserController.php";
+require "../controller/PasswordController.php";
+require "../../class/User.php";
+require "../../class/PasswordReset.php";
+require "../controller/UserController.php";
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -16,24 +16,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Passwords don't match");
     }
 
-    // Verify token again
-    //$stmt = $pdo->prepare("SELECT email FROM password_resets WHERE token = ? AND email = ? AND expires_at > NOW()");
-    //$stmt->execute([$token, $email]);
-    //$reset = $stmt->fetch();
-
     $passwordReset = new PasswordReset();
     $passwordReset->setToken($token);
     $passwordReset->setEmail($email);
 
-
     $passwordController = new PasswordController($passwordReset);
-
 
     $result = $passwordController->authPasswordToken();
 
-//    if (!$reset) {
-//        die("Invalid or expired reset token");
-//    }
+    if ($result == null) {
+        $error = "invalidResetToken";
+        header('Location: ../login.php?error='.$error."&email=".$email);
+        exit;
+
+    } elseif ($result['expires_at'] < date('Y-m-d H:i:s')){
+        $error = "expiredResetToken";
+        header('Location: ../login.php?error='.$error."&email=".$email);
+        exit;
+    }
 
     // Update password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $error = "updatePasswordSuccessfully";
-    header('Location: login.php?error='.$error."&email=".$email);
+    header('Location: ../login.php?error='.$error."&email=".$email);
     exit;
 }
 ?>

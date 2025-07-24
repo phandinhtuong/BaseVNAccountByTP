@@ -1,7 +1,7 @@
 <?php
 
-require_once '../schema/DataAccess.php';
-require_once "../logging/logByTP.php";
+require_once dirname(__DIR__, 2) . "/schema/DataAccess.php";
+require_once dirname(__DIR__, 2) . "/logging/logByTP.php";
 
 class UserController
 {
@@ -28,57 +28,37 @@ class UserController
     public function checkValidUserSignup(): array
     {
         try {
-            //$errors = [];
             if (empty($this->user->getName())) {
-                //$errors[] = "Username is required";
-                //$errors[] = "nullUsername";
                 $error = "nullName";
                 return ['success' => false, 'error' => $error];
-                //header("Location: signup.php?error=nullusername" . "&email=" . $user->getEmail(). "&name=" . $user->getName());
-                //exit();
             }
 
             if (empty($this->user->getUsername())) {
-                //$errors[] = "Username is required";
-                //$errors[] = "nullUsername";
                 $error = "nullUsername";
                 return ['success' => false, 'error' => $error];
-                //header("Location: signup.php?error=nullusername" . "&email=" . $user->getEmail(). "&name=" . $user->getName());
-                //exit();
             }
 
             if (empty($this->user->getEmail())) {
-                //$errors[] = "Email is required";
-                //$errors[] = "nullEmail";
                 $error = "nullEmail";
                 return ['success' => false, 'error' => $error];
             } elseif (!filter_var($this->user->getEmail(), FILTER_VALIDATE_EMAIL)) {
-                //$errors[] = "Invalid email format";
-                //$errors[] = "invalidEmail";
                 $error = "invalidEmail";
                 return ['success' => false, 'error' => $error];
             }
 
             if (empty($this->user->getPassword())) {
-                //$errors[] = "Password is required";
-                //$errors[] = "nullPassword";
                 $error = "nullPassword";
                 return ['success' => false, 'error' => $error];
             } elseif (strlen($this->user->getPassword()) < 8) {
-                //$errors[] = "Password must be at least 8 characters";
-                //$errors[] = "weakPassword";
                 $error = "weakPassword";
                 return ['success' => false, 'error' => $error];
             }
 
             if ($this->userExists()){
-                //$errors[] = "Username already exists";
-                //$errors[] = "usernameExists";
                 $error = "usernameExists";
                 return ['success' => false, 'error' => $error];
             }
 
-            //return $errors;
             return ['success' => true];
 
         } catch (PDOException $e){
@@ -132,12 +112,7 @@ class UserController
     }
 
     public function login(): array{
-        //$errors = [];
-
         if (empty($this->user->getEmail()) || empty($this->user->getPassword())) {
-            //header("Location: login.php?error=emptyfields");
-            //exit();
-            //$errors[] = "nullEmailOrPassword";
             $error = "nullEmailOrPassword";
             return ['success' => false, 'error' => $error];
         }
@@ -150,9 +125,6 @@ class UserController
             $stmt->execute();
 
             if ($stmt->rowCount() === 0) {
-                //header("Location: login.php?error=nouser");
-                //exit();
-                //$errors[] = "noUser";
                 $error = "noUser";
                 return ['success' => false, 'error' => $error];
             }
@@ -161,26 +133,15 @@ class UserController
 
             // Verify password
             if (!password_verify($this->user->getPassword(), $dbUser['password'])) {
-                //header("Location: login.php?error=wrongpwd");
-                //exit();
-                //$errors[] = "wrongPassword";
                 $error = "wrongPassword";
                 return ['success' => false, 'error' => $error];
             }
-
-            // Login successful - start session
-            //$_SESSION['user_id'] = $dbUser['id'];
-            //$_SESSION['username'] = $dbUser['username'];
 
             $returnUser = new user();
             $returnUser->setId($dbUser['id']);
             $returnUser->setUsername($dbUser['username']);
 
             return ['success' => true, 'user' => $returnUser];
-
-            // Redirect to dashboard or home page
-            //header("Location: UserInfo.php");
-            //exit();
 
         } catch (PDOException $e) {
             logException("login",$e);
@@ -262,7 +223,7 @@ class UserController
         }
     }
 
-    public function saveToken(string $token, string $expires)
+    public function saveToken(): bool
     {
         try {
             $sql = "
@@ -273,8 +234,8 @@ class UserController
                     username = :username
             ";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':login_token', $token);
-            $stmt->bindValue(':login_token_expires', $expires);
+            $stmt->bindValue(':login_token', $this->user->getLoginToken());
+            $stmt->bindValue(':login_token_expires', $this->user->getLoginTokenExpires());
             $stmt->bindValue(':username', $this->user->getUsername());
             return $stmt->execute();
 

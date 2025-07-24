@@ -1,16 +1,17 @@
 <?php
 
 require_once 'Config.php';
+require_once dirname(__DIR__, 1) .'/logging/logByTP.php';
 
-function connectToDatabase() {
-
+function connectToDatabase(): PDO
+{
     try {
         $db = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $db;
     } catch (PDOException $e) {
-        error_log("Connection failed: ".$e->getMessage(). ", at: ". $e->getTraceAsString());
-        die("Connection failed: " . $e->getMessage());
+        logException("Connection", $e);
+        throw new PDOException("Connection failed: " . $e->getMessage());
     }
 
 }
