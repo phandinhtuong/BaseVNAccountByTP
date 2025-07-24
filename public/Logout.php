@@ -2,17 +2,12 @@
 
 require "../class/User.php";
 require "UserController.php";
+require_once "../logging/logByTP.php";
 
 session_start();
 
-error_log("----------------------------------------------------------------");
-error_log("begin logout");
 
-
-error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
-error_log("POST VARIABLES:\n" . print_r($_POST, true));
-error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
+beginLog("logout");
 
 if (!empty($_SESSION['username'])) {
 
@@ -36,8 +31,7 @@ session_unset();
 // Destroy the session
 session_destroy();
 
-error_log("end logout");
-error_log("----------------------------------------------------------------\n");
+endLog("success","logout");
 
 // Redirect to login page
 //header("Location: login.php?error=logout");

@@ -1,6 +1,7 @@
 <?php
 
 require_once '../schema/DataAccess.php';
+require_once "../logging/logByTP.php";
 
 class PasswordController
 {
@@ -26,7 +27,7 @@ class PasswordController
 
             return true;
         } catch (PDOException $e) {
-            error_log("addPasswordReset failed: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("addPasswordReset", $e);
             throw $e;
         }
     }
@@ -53,7 +54,7 @@ class PasswordController
             }
 
         } catch(PDOException $e) {
-            error_log("error authToken: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("authPasswordToken", $e);
             throw $e;
         }
     }
@@ -69,7 +70,7 @@ class PasswordController
 
             return true;
         } catch (PDOException $e) {
-            error_log("deletePasswordReset failed: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("deletePasswordReset", $e);
             throw $e;
         }
     }

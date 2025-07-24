@@ -4,15 +4,9 @@ session_start();
 
 require "../class/User.php";
 require "UserController.php";
+require_once "../logging/logByTP.php";
 
-error_log("----------------------------------------------------------------");
-error_log("begin signup");
-
-
-error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
-error_log("POST VARIABLES:\n" . print_r($_POST, true));
-error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
+beginLog("signup");
 
 
 try {
@@ -35,26 +29,17 @@ try {
         if ($result['success']) {
 
             if ($userController->signup()){
-
-                error_log("signup success");
-                error_log("end signup");
-                error_log("----------------------------------------------------------------\n");
-
+                endLog("success", "signup");
                 header("Location: login.php?registration=success"."&email=".urlencode($_POST['email']));
                 exit();
             };
 
         } else {
-//            foreach ($errors as $error) {
-//                echo "<p style='color:red;'>$error</p>";
-//            }
 
-            error_log("Location: signup.php?error=".$result['error']
+            endLog("Location: signup.php?error=".$result['error']
                 ."&name=".urlencode($_POST['name'])
                 ."&username=".urlencode($_POST['username'])
-                ."&email=".urlencode($_POST['email']));
-            error_log("end signup");
-            error_log("----------------------------------------------------------------\n");
+                ."&email=".urlencode($_POST['email']), "signup");
 
             header("Location: signup.php?error=".$result['error']
                         ."&name=".urlencode($_POST['name'])
@@ -71,9 +56,8 @@ try {
 //    }
 
 } catch (PDOException $e) {
-    error_log("Signup error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
-    error_log("end signup");
-    error_log("----------------------------------------------------------------\n");
+    logException("signup", $e);
+    endLog("error", "signup");
     echo 'Error, please try again later';
 }
 ?>

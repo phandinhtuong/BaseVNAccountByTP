@@ -1,6 +1,7 @@
 <?php
 
 require_once '../schema/DataAccess.php';
+require_once "../logging/logByTP.php";
 
 class UserController
 {
@@ -81,7 +82,7 @@ class UserController
             return ['success' => true];
 
         } catch (PDOException $e){
-            error_log("checkValidUserSignup error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
+            logException("checkValidUserSignup",$e);
             throw $e;
         }
 
@@ -102,7 +103,7 @@ class UserController
                 return false;
             }
         } catch (PDOException $e) {
-            error_log("PDOException: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
+            logException("userExists",$e);
             throw $e;
         }
     }
@@ -125,7 +126,7 @@ class UserController
 
             return true;
         } catch (PDOException $e) {
-            error_log("Registration failed: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("signup",$e);
             throw $e;
         }
     }
@@ -182,7 +183,7 @@ class UserController
             //exit();
 
         } catch (PDOException $e) {
-            error_log("login failed: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("login",$e);
             throw $e;
         }
     }
@@ -219,7 +220,7 @@ class UserController
             return $this->user;
 
         } catch(PDOException $e) {
-            error_log("getUserInfoFromDatabase error: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("getUserInfoFromDatabase",$e);
             throw $e;
         }
     }
@@ -256,7 +257,7 @@ class UserController
             return $stmt->execute();
 
         } catch(PDOException $e) {
-            error_log("error update_profile: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("update_profile",$e);
             return false;
         }
     }
@@ -278,7 +279,7 @@ class UserController
             return $stmt->execute();
 
         } catch(PDOException $e) {
-            error_log("error saveToken: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("saveToken",$e);
             return false;
         }
     }
@@ -303,7 +304,7 @@ class UserController
             }
 
         } catch(PDOException $e) {
-            error_log("error authToken: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("authToken",$e);
             throw $e;
         }
     }
@@ -323,7 +324,7 @@ class UserController
             return $stmt->execute();
 
         } catch(PDOException $e) {
-            error_log("error clearToken: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("clearToken",$e);
             return false;
         }
     }
@@ -346,7 +347,7 @@ class UserController
             }
 
         } catch(PDOException $e) {
-            error_log("error checkEmail: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("checkEmail",$e);
             throw $e;
         }
     }
@@ -366,7 +367,7 @@ class UserController
             return $stmt->execute();
 
         } catch(PDOException $e) {
-            error_log("error updatePassword: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
+            logException("updatePassword",$e);
             return false;
         }
     }

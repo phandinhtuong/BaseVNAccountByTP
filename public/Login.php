@@ -1,18 +1,13 @@
 <?php
 
+require_once "../logging/logByTP.php";
 require "../class/User.php";
 require "UserController.php";
 
 session_start();
-
-error_log("----------------------------------------------------------------");
-error_log("begin login");
+beginLog("login");
 
 
-error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
-error_log("POST VARIABLES:\n" . print_r($_POST, true));
-error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
 
 // Initialize failed attempts counter
 if (!isset($_SESSION['failed_attempts'])) {
@@ -22,8 +17,14 @@ if (!isset($_SESSION['failed_attempts'])) {
     error_log("session failed_attempts = " .$_SESSION['failed_attempts']);
 }
 
-function generateToken() {
-    return bin2hex(random_bytes(32));
+function generateToken(): string
+{
+    try {
+        return bin2hex(random_bytes(32));
+    } catch (Exception $e) {
+        logException("generateToken", $e);
+        throw $e;
+    }
 }
 
 try {
@@ -89,18 +90,13 @@ try {
                         );
 
                     } else {
-                        error_log("user ". $result['user']->getUsername() . "save token error");
-                        error_log("end login");
-                        error_log("----------------------------------------------------------------\n");
+                        endLog("user ". $result['user']->getUsername() . "save token error", "login");
                         header("Location: login.php?error=".$result['error']
                             ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
                         exit();
                     }
                 }
-
-                error_log("login success");
-                error_log("end login");
-                error_log("----------------------------------------------------------------\n");
+                endLog("login success", "login");
                 header("Location: UserInfo.php");
                 exit();
             } else {
@@ -108,30 +104,24 @@ try {
     //                echo "<p style='color:red;'>$error</p>";
     //            }
                 $_SESSION['failed_attempts']++;
-                error_log("Login error: email: ".$_POST['email'] . ", error:" . $result['error']);
-                error_log("end login");
-                error_log("----------------------------------------------------------------\n");
+                endLog("Login error: email: ".$_POST['email'] . ", error:" . $result['error'], "login");
                 header("Location: login.php?error=".$result['error']
                     ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
                 exit();
             }
         } else {
-            error_log("Login error: email: ".$_POST['email'] . ", error:" . $error);
-            error_log("end login");
-            error_log("----------------------------------------------------------------\n");
+            endLog("Login error: email: ".$_POST['email'] . ", error:" . $error, "login");
             header("Location: login.php?error=".$error
                 ."&email=".urlencode($_POST['email'])."&remember=".urlencode($_POST['remember']));
             exit();
         }
     }
 } catch (PDOException $e) {
-    error_log("Login error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
+    logException("login", $e);
     echo 'Error, please try again later';
-    error_log("end login");
-    error_log("----------------------------------------------------------------\n");
+    endLog("Error", "login");
 }
-error_log("end login");
-error_log("----------------------------------------------------------------\n");
+endLog("success","login");
 
 ?>
 

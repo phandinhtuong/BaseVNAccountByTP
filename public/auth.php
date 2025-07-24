@@ -1,15 +1,8 @@
 <?php
 require "UserController.php";
-
+require_once "../logging/logByTP.php";
 session_start();
-error_log("----------------------------------------------------------------");
-error_log("begin auth");
-
-
-error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
-error_log("POST VARIABLES:\n" . print_r($_POST, true));
-error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
+beginLog("auth");
 
 function authenticateUser()
 {
@@ -38,9 +31,7 @@ function authenticateUser()
         }
     }
 
-    error_log("Not authenticated");
-    error_log("end auth");
-    error_log("----------------------------------------------------------------\n");
+    endLog("Not authenticated", "auth");
     // Not authenticated
     header('Location: login.php');
     exit;
@@ -49,9 +40,9 @@ function authenticateUser()
 try {
     $currentUsername = authenticateUser();
 } catch (Exception $e) {
-    error_log("auth error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
+    logException("auth", $e);
 }
 
-error_log("end auth");
-error_log("----------------------------------------------------------------\n");
+endLog("Success", "auth");
+
 

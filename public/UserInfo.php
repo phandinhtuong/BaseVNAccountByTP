@@ -2,24 +2,16 @@
 require "../class/User.php";
 //require_once "UserController.php";
 require_once "auth.php";
+require_once "../logging/logByTP.php";
 
 // Start the session
 //session_start();
+beginLog("userinfo");
 
-error_log("----------------------------------------------------------------");
-error_log("begin UserInfo");
-
-
-error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
-error_log("POST VARIABLES:\n" . print_r($_POST, true));
-error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
 
 // Check if user is logged in
 if (!isset($_SESSION['username'])) {
-    error_log("no username");
-    error_log("end UserInfo");
-    error_log("----------------------------------------------------------------\n");
+    endLog("no username", "userinfo");
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
@@ -44,9 +36,8 @@ try {
     $user = $userController->getUserInfoFromDatabase();
 
 } catch (Exception $e) {
-    error_log("error get user information: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
-    error_log("end UserInfo");
-    error_log("----------------------------------------------------------------\n");
+    logException("get user information", $e);
+    endLog("error","userinfo");
     throw new Exception("error get user information:".$e->getMessage());
 }
 
@@ -55,9 +46,7 @@ try {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 
     if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        error_log("post csrf token = " . $_POST['csrf_token'] . ", session csrf token = " . $_SESSION['csrf_token'].", CSRF token validation failed");
-        error_log("end UserInfo");
-        error_log("----------------------------------------------------------------\n");
+        endLog("post csrf token = " . $_POST['csrf_token'] . ", session csrf token = " . $_SESSION['csrf_token'].", CSRF token validation failed", "userinfo");
         die("CSRF token validation failed");
     }
 
@@ -138,15 +127,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
             echo '<script>alert("Error updating profile");</script>';
         }
     } catch (Exception $e) {
-        error_log("error update profile: ".$e->getMessage() . ", at: ". $e->getTraceAsString());
-        error_log("end UserInfo");
-        error_log("----------------------------------------------------------------\n");
+        logException("update profile", $e);
+        endLog("update profile error", "userinfo");
         echo '<script>alert("error update profile, see log for more details ");</script>';
     }
 }
-
-error_log("end UserInfo");
-error_log("----------------------------------------------------------------\n");
+endLog("success", "userinfo");
 
 ?>
 

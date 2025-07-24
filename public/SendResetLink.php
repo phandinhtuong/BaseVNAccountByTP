@@ -5,13 +5,9 @@ require "../class/User.php";
 require "../class/PasswordReset.php";
 require "UserController.php";
 require "PasswordController.php";
+require_once "../logging/logByTP.php";
 
-error_log("----------------------------------------------------------------");
-error_log("begin send reset link");
-
-error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-error_log("POST VARIABLES:\n" . print_r($_POST, true));
-error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
+beginLog("send reset link");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
@@ -47,22 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             if (!sendEmail($email, $subject, $message)) {
-                error_log("Location: ForgotPassword.php?error="
-                    ."&email=".urlencode($_POST['email']));
+                endLog("Location: ForgotPassword.php?error="
+                    ."&email=".urlencode($_POST['email']),"send reset link");
                 header("Location: ForgotPassword.php?error="
                     ."&email=".urlencode($_POST['email']));
-                error_log("end send reset link");
-                error_log("----------------------------------------------------------------\n");
                 exit;
             }
         } catch (PDOException $e) {
-            error_log("sendEmail error: ".$e->getMessage() . ", at:" . $e->getTraceAsString());
-            error_log("Location: ForgotPassword.php?error="
-                ."&email=".urlencode($_POST['email']));
+            logException("sendEmail", $e);
+            endLog("Location: ForgotPassword.php?error="
+                ."&email=".urlencode($_POST['email']),"send reset link");
             header("Location: ForgotPassword.php?error="
                 ."&email=".urlencode($_POST['email']));
-            error_log("end send reset link");
-            error_log("----------------------------------------------------------------\n");
             exit;
         }
 
@@ -76,20 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: ForgotPassword.php?error=".$error
             ."&email=".urlencode($_POST['email']));
     }
-    error_log("end send reset link");
-    error_log("----------------------------------------------------------------\n");
+
+    endLog("success", "send reset link");
     exit;
 
 }
 
 function sendEmail($to, $subject, $message) : bool {
-//    $headers = "From: no-reply@tplocalhost.com\r\n";
-//    $headers .= "Reply-To: no-reply@tplocalhost.com\r\n";
-//    $headers .= "MIME-Version: 1.0\r\n";
-//    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-//
-//    // For production, consider using PHPMailer or similar
-//    return mail($to, $subject, $message, $headers);
 
     $mail = new PHPMailer\PHPMailer\PHPMailer();
     $mail->isSMTP();

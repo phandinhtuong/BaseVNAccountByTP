@@ -1,15 +1,12 @@
 <?php
 
-error_log("----------------------------------------------------------------");
-error_log("begin ForgotPassword");
+require_once "../logging/logByTP.php";
 
 
-error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-error_log("POST VARIABLES:\n" . print_r($_POST, true));
-error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
+beginLog("ForgotPassword");
+endLog("Success", "ForgotPassword");
 
-error_log("end ForgotPassword");
-error_log("----------------------------------------------------------------\n");
+
 ?>
 <!DOCTYPE html>
 <html>

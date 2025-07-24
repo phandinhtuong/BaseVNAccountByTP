@@ -1,6 +1,6 @@
 {
     "require": {
         "phpmailer/phpmailer": "^6.10",
-      "ext-pdo": "*"
+        "ext-pdo": "*"
     }
 }
