@@ -33,7 +33,8 @@ function authenticateUser()
 
     endLog("Not authenticated", "auth");
     // Not authenticated
-    header('Location: Login.php');
+    $error = "notAuthenticated";
+    header("Location: Login.php?error=".$error);
     exit;
 }
 

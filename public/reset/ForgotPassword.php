@@ -108,9 +108,11 @@ endLog("Success", "ForgotPassword");
         const urlParams = new URLSearchParams(window.location.search);
         const email = urlParams.get('email');
         window.history.replaceState({}, '', window.location.pathname);
+
         if (email) {
             document.querySelector('input[name="email"]').value  = decodeURIComponent(email);
         }
+
         function redirectToLogin() {
             // Get the email value from the form
             const email = document.querySelector('input[name="email"]').value;
