@@ -19,6 +19,11 @@ class UserController
         $this->user = $user;
     }
 
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
     public function processBeforeSignup()
     {
         $this->user->hashPassword();
@@ -333,6 +338,8 @@ class UserController
             return false;
         }
     }
+
+
 
 
 }

@@ -54,6 +54,8 @@ try {
                     $token = generateToken();
                     $expires = date('Y-m-d H:i:s', strtotime('+'.numberOfDaysRemainingLogins.' days'));
 
+                    $userController->getUser()->setLoginToken($token);
+                    $userController->getUser()->setLoginTokenExpires($expires);
 
                     if ($userController->saveToken()) {
                         error_log("user ". $result['user']->getUsername() . " save token successfully: ".$token . ", expires " . $expires);
@@ -77,7 +79,7 @@ try {
                         exit();
                     }
                 }
-                endLog("login success", "login");
+                endLog("login success", "login controller");
                 header("Location: ../UserInfo.php");
                 exit();
             } else {

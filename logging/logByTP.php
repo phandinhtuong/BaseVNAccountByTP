@@ -6,12 +6,12 @@ function beginLog(string $action): void
     error_log("begin ". $action);
 
 
-    error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
-    if (isset($_SESSION)) {
-        error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
-    }
-    error_log("POST VARIABLES:\n" . print_r($_POST, true));
-    error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
+//    error_log("SERVER VARIABLES:\n" . print_r($_SERVER, true));
+//    if (isset($_SESSION)) {
+//        error_log("SESSION VARIABLES:\n" . print_r($_SESSION, true));
+//    }
+//    error_log("POST VARIABLES:\n" . print_r($_POST, true));
+//    error_log("COOKIE VARIABLES:\n" . print_r($_COOKIE, true));
 }
 
 function endLog(string $error, string $action): void

@@ -5,6 +5,7 @@ require_once "../logging/logByTP.php";
 
 beginLog("userinfo");
 
+
 // Check if user is logged in
 if (!isset($_SESSION['username'])) {
     endLog("no username", "userinfo");
@@ -28,6 +29,8 @@ try {
     $userController = new UserController($user);
 
     $user = $userController->getUserInfoFromDatabase();
+    $_SESSION['user'] = $user;
+    //$_SESSION['userController'] = $userController;
 
 } catch (Exception $e) {
     logException("get user information", $e);
@@ -35,72 +38,11 @@ try {
     throw new Exception("error get user information:".$e->getMessage());
 }
 
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
-
-    if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-        endLog("post csrf token = " . $_POST['csrf_token'] . ", session csrf token = " . $_SESSION['csrf_token'].", CSRF token validation failed", "userinfo");
-        die("CSRF token validation failed");
-    }
-
-    try {
-
-        error_log("Files array: " . print_r($_FILES, true));
-        error_log("Post data: " . print_r($_POST, true));
-
-        $day = isset($_POST['day']) ? (int)$_POST['day'] : null;
-        $month = isset($_POST['month']) ? (int)$_POST['month'] : null;
-        $year = isset($_POST['year']) ? (int)$_POST['year'] : null;
-        $dob = null;
-
-        error_log("day = " . $day);
-        error_log("month = " . $month);
-        error_log("year = " . $year);
-
-        if ($day && $month && $year && checkdate($month, $day, $year)) {
-            $dob = "$year-$month-$day";
-        }
-
-        $profilePictureBase64 = null;
-
-        if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
-            error_log("profile pic ok ");
-            $file = $_FILES['profile_picture'];
-            $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
-            $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-            if (in_array($file_ext, $allowed_types)) {
-                $file_content = file_get_contents($file['tmp_name']);
-                $profilePictureBase64 = 'data:image/' . $file_ext . ';base64,' . base64_encode($file_content);
-            }
-        }
-
-        $newUser = new User();
-        $newUser->setFirstName($_POST['firstName'] ?? $user->getFirstName());
-        $newUser->setLastName($_POST['lastName'] ?? $user->getLastName());
-        $newUser->setName($_POST['firstName'] . " " . $_POST['lastName'] ?? $user->getName());
-        $newUser->setJobTitle($_POST['jobTitle'] ?? $user->getJobTitle());
-        $newUser->setCompanyName($_POST['companyName'] ?? $user->getCompanyName());
-        $newUser->setProfilePicture($profilePictureBase64 ?? $user->getProfilePicture());
-        $newUser->setDob($dob ?? $user->getDob());
-        $newUser->setPhoneNumber($_POST['phoneNumber'] ?? $user->getPhoneNumber());
-        $newUser->setAddress($_POST['address'] ?? $user->getAddress());
-
-        if ($userController->update_profile($newUser)) {
-            // Refresh user info
-            $user = $userController->getUserInfoFromDatabase();
-            echo '<script>alert("Profile updated successfully!");</script>';
-        } else {
-            echo '<script>alert("Error updating profile");</script>';
-        }
-    } catch (Exception $e) {
-        logException("update profile", $e);
-        endLog("update profile error", "userinfo");
-        echo '<script>alert("error update profile, see log for more details ");</script>';
-    }
-}
 endLog("success", "userinfo");
+
+
+
+
 
 ?>
 
@@ -112,24 +54,15 @@ endLog("success", "userinfo");
     <title>User Profile</title>
     <link rel="stylesheet" type="text/css" href="../css/userinfo.css">
     <link rel="stylesheet" type="text/css" href="../css/editProfile.css">
-
-    <script>
-        function showEditModal() {
-            document.getElementById('editModal').style.display = 'block';
-        }
-
-        function hideEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
-
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            const modal = document.getElementById('editModal');
-            if (event.target === modal) {
-                hideEditModal();
-            }
-        }
-    </script>
+    <link rel="stylesheet" type="text/css" href="../css/css1.css">
+    <link rel="stylesheet" type="text/css" href="../css/css2.css">
+    <link rel="stylesheet" type="text/css" href="../css/css3.css">
+    <script type="text/javascript" src="../js/commonJS.js"></script>
+    <script type="text/javascript" src="../js/UserInfoJS.js"></script>
+    <?php
+    include('view/editUserInfoView.php');
+    include('view/commonView.html');
+    ?>
 </head>
 <body>
     <div class="w-full">
@@ -210,153 +143,10 @@ endLog("success", "userinfo");
 
     </div>
 
+    <script>
+        displayError();
+    </script>
 
-    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
-
-        <div style="background-color:white; margin:100px auto; width:80%; max-width:700px;">
-            <div style="background-color:#EFEFEF; padding:10px;">
-
-                <span style="float:right; cursor:pointer;" onclick="hideEditModal()">×</span>
-                <h2>EDIT PERSONAL PROFILE</h2>
-            </div>
-            <form method="POST" enctype="multipart/form-data" style="padding:15px;">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Your first name</div>
-                        <div class="label-help">Your first name</div>
-                    </div>
-                    <div class="form-control">
-                        <input type="text" placeholder="Your first name" name="firstName" value="<?php echo htmlspecialchars($user->getFirstName() ?? ''); ?>">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Your last name</div>
-                        <div class="label-help">Your last name</div>
-                    </div>
-                    <div class="form-control">
-                        <input type="text" placeholder="Your last name" name="lastName" value="<?php echo htmlspecialchars($user->getLastName() ?? ''); ?>">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Email</div>
-                        <div class="label-help">Your email address</div>
-                    </div>
-                    <div class="form-control">
-                        <input disabled type="email" placeholder="Your email" name="email" value="<?php echo htmlspecialchars($user->getEmail()); ?>">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Username</div>
-                        <div class="label-help">Your username</div>
-                    </div>
-                    <div class="form-control">
-                        <input disabled type="text" placeholder="@username" name="username" value="<?php echo htmlspecialchars($user->getUsername() ?? ''); ?>">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Job title</div>
-                        <div class="label-help">Job title</div>
-                    </div>
-                    <div class="form-control">
-                        <input type="text" placeholder="Your job title" name="jobTitle" value="<?php echo htmlspecialchars($user->getJobTitle() ?? ''); ?>">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Profile image</div>
-                        <div class="label-help">Profile image</div>
-                    </div>
-                    <div class="form-control">
-                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" >
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Date of birth</div>
-                        <div class="label-help">Date of birth</div>
-                    </div>
-                    <div class="form-control dob-selects">
-                        <select id="day" name="day" required>
-                            <option value="" selected disabled>Day</option>
-                            <script>
-                                const storedDay = <?php echo $user->getDob() ? (int)date('d', strtotime($user->getDob())) : 'null' ?>;
-                                for (let i = 1; i <= 31; i++) {
-                                    const selected = storedDay === i ? ' selected' : '';
-                                    document.write('<option value="' + i + '"' + selected + '>' + i + '</option>');
-                                }
-                            </script>
-                        </select>
-
-                        <select id="month" name="month" required>
-                            <option value="" selected disabled>Month</option>
-                            <script>
-                                const storedMonth = <?php echo $user->getDob() ? (int)date('m', strtotime($user->getDob())) : 'null' ?>;
-                                const months = [
-                                    [1, 'January'], [2, 'February'], [3, 'March'], [4, 'April'],
-                                    [5, 'May'], [6, 'June'], [7, 'July'], [8, 'August'],
-                                    [9, 'September'], [10, 'October'], [11, 'November'], [12, 'December']
-                                ];
-                                months.forEach(([num, name]) => {
-                                    const selected = storedMonth === num ? ' selected' : '';
-                                    document.write('<option value="' + num + '"' + selected + '>' + name + '</option>');
-                                });
-                            </script>
-                        </select>
-
-                        <select id="year" name="year" required>
-                            <option value="" selected disabled>Year</option>
-                            <script>
-                                const storedYear = <?php echo $user->getDob() ? (int)date('Y', strtotime($user->getDob())) : 'null' ?>;
-                                const currentYear = new Date().getFullYear();
-                                for (let i = currentYear; i >= 1900; i--) {
-                                    const selected = storedYear === i ? ' selected' : '';
-                                    document.write('<option value="' + i + '"' + selected + '>' + i + '</option>');
-                                }
-                            </script>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Your phone number</div>
-                        <div class="label-help">Your phone number</div>
-                    </div>
-                    <div class="form-control">
-                        <input type="text" placeholder="Phone number" name="phoneNumber" value="<?php echo htmlspecialchars($user->getPhoneNumber() ?? ''); ?>">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-label">
-                        <div class="label-title">Current address</div>
-                        <div class="label-help">Current address</div>
-                    </div>
-                    <div class="form-control">
-                        <input type="text" placeholder="Current address" name="address" value="<?php echo htmlspecialchars($user->getAddress() ?? ''); ?>">
-                    </div>
-                </div>
-                <div style="border-top: 1px dashed #d1d5db; margin: 20px 0;"></div>
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="hideEditModal()">Cancel</button>
-                    <button type="submit" class="btn-update" name="update_profile">Update</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
 
 </body>
 </html>
