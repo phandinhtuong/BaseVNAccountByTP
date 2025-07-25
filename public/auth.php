@@ -17,10 +17,11 @@ function authenticateUser()
 
         $user = new User();
         $user->setUsername($userName);
+        $user->setloginToken($token);
 
         $userController = new UserController($user);
 
-        if ($userController->authToken($token)) {
+        if ($userController->authToken()) {
             // Refresh session
             $_SESSION['username'] = $userName;
             return $userName;

@@ -46,6 +46,7 @@
 }
 
 .form-control input,
+.form-control textarea,
 .form-control select {
     width: 100%;
     padding: 8px;
@@ -67,7 +68,7 @@
 
 .form-actions button {
     flex: 1;
-    padding: 8px;
+    padding: 5px;
     font-size: 16px;
     font-weight: bold;
     border: none;
@@ -77,10 +78,15 @@
 
 .btn-cancel {
     background: #DDDDDD;
-    color: #333;
+    color: #726869;
 }
 
 .btn-update {
     background: #68B830;
     color: white;
+}
+
+.editProfile {
+    color: #635F57;
+    font-weight: 600;
 }

@@ -4,6 +4,12 @@ require_once dirname(__DIR__, 1) . '/schema/Config.php';
 
 session_start();
 
+if (!empty($_SESSION['user_id']) or !empty($_COOKIE['remember'])) {
+    header("Location: UserInfo.php");
+    exit;
+}
+
+
 // Initialize failed attempts counter to show CAPTCHA
 if (!isset($_SESSION['failed_attempts'])) {
     $_SESSION['failed_attempts'] = 0;

@@ -251,14 +251,14 @@ class UserController
         }
     }
 
-     function authToken(string $rememberToken): bool {
+     function authToken(): bool {
 
         try {
 
-            $sql = "SELECT * FROM users WHERE username = :username and remember_token = :remember_token AND remember_expires > NOW()";
+            $sql = "SELECT * FROM users WHERE username = :username and login_token = :login_token AND login_token_expires > NOW()";
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue(':username', $this->user->getUsername());
-            $stmt->bindValue(':remember_token', $rememberToken);
+            $stmt->bindValue(':login_token', $this->user->getLoginToken());
 
             $stmt->execute();
 

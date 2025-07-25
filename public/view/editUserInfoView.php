@@ -1,10 +1,10 @@
 <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
 
-  <div style="background-color:white; margin:100px auto; width:80%; max-width:700px;">
+  <div style="background-color:white; margin:100px auto; width:80%; max-width:800px;">
     <div style="background-color:#EFEFEF; padding:10px;">
 
       <span style="float:right; cursor:pointer;" onclick="hideEditModal()">×</span>
-      <h2>EDIT PERSONAL PROFILE</h2>
+      <h2 class="editProfile">EDIT PERSONAL PROFILE</h2>
     </div>
     <form method="POST" action='controller/UserInfoController.php' enctype="multipart/form-data" style="padding:15px;">
       <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
@@ -76,7 +76,7 @@
         </div>
         <div class="form-control dob-selects">
           <select id="day" name="day" required>
-            <option value="" selected disabled>Day</option>
+            <option value="" selected disabled>-- Select date --</option>
             <script>
               const storedDay = <?php echo $user->getDob() ? (int)date('d', strtotime($user->getDob())) : 'null' ?>;
               for (let i = 1; i <= 31; i++) {
@@ -87,7 +87,7 @@
           </select>
 
           <select id="month" name="month" required>
-            <option value="" selected disabled>Month</option>
+            <option value="" selected disabled>-- Select month --</option>
             <script>
               const storedMonth = <?php echo $user->getDob() ? (int)date('m', strtotime($user->getDob())) : 'null' ?>;
               const months = [
@@ -103,7 +103,7 @@
           </select>
 
           <select id="year" name="year" required>
-            <option value="" selected disabled>Year</option>
+            <option value="" selected disabled>-- Select year --</option>
             <script>
               const storedYear = <?php echo $user->getDob() ? (int)date('Y', strtotime($user->getDob())) : 'null' ?>;
               const currentYear = new Date().getFullYear();
@@ -132,7 +132,7 @@
           <div class="label-help">Current address</div>
         </div>
         <div class="form-control">
-          <input type="text" placeholder="Current address" name="address" value="<?php echo htmlspecialchars($user->getAddress() ?? ''); ?>">
+            <textarea type="text" placeholder="Current address" name="address" ><?php echo htmlspecialchars($user->getAddress() ?? ''); ?></textarea>
         </div>
       </div>
       <div style="border-top: 1px dashed #d1d5db; margin: 20px 0;"></div>

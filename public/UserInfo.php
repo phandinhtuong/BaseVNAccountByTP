@@ -55,8 +55,8 @@ endLog("success", "userinfo");
     <link rel="stylesheet" type="text/css" href="../css/userinfo.css">
     <link rel="stylesheet" type="text/css" href="../css/editProfile.css">
     <link rel="stylesheet" type="text/css" href="../css/css1.css">
-    <link rel="stylesheet" type="text/css" href="../css/css2.css">
-    <link rel="stylesheet" type="text/css" href="../css/css3.css">
+<!--    <link rel="stylesheet" type="text/css" href="../css/css2.css">-->
+<!--    <link rel="stylesheet" type="text/css" href="../css/css3.css">-->
     <script type="text/javascript" src="../js/commonJS.js"></script>
     <script type="text/javascript" src="../js/UserInfoJS.js"></script>
     <?php
@@ -87,7 +87,7 @@ endLog("success", "userinfo");
         </div>
 
         <!-- Profile Section -->
-        <div class="bg-white mx-4 mt-6 rounded-lg p-6">
+        <div class="bg-white mx-4 mt-6 rounded-lg">
             <div class="flex items-start">
                 <?php if (!empty($user->getProfilePicture())): ?>
                     <img src="<?php echo htmlspecialchars($user->getProfilePicture()); ?>" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover mr-6">
@@ -96,8 +96,8 @@ endLog("success", "userinfo");
                 <?php endif; ?>
 
                 <div class="flex-1">
-                    <h2 class="text-2xl font-semibold text-gray-900 mb-1"><?php echo htmlspecialchars($user->getName() ?? ''); ?></h2>
-                    <p class="text-gray-500 mb-4">Owner</p>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-1" style="font-size: 2rem"><?php echo htmlspecialchars($user->getName() ?? ''); ?></h2>
+                    <p class="text-gray-400 mb-4">Owner</p>
 
                     <div class="space-y-3 text-sm">
                         <div class="flex">
@@ -132,7 +132,7 @@ endLog("success", "userinfo");
                     <div class="bg-white text-sm border-b border-t py-4 " >
                         <div class="flex">
                             <span class="text-gray-500 w-24 flex-shrink-0">Address</span>
-                            <span class="text-gray-900"><?php echo htmlspecialchars($user->getAddress() ?? ''); ?></span>
+                            <span class="text-gray-900" style="text-align: center;flex-grow: 1"><?php echo htmlspecialchars($user->getAddress() ?? ''); ?></span>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,9 @@
 <?php
 include('view/commonView.html');
-
+if (!empty($_SESSION['user_id']) or !empty($_COOKIE['remember'])) {
+    header("Location: UserInfo.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
