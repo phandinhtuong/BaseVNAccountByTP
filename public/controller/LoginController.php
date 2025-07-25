@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__DIR__, 2) . "/logging/logByTP.php";
 require dirname(__DIR__, 2) . "/class/User.php";
-require "UserController.php";
+require dirname(__DIR__, 1) . "/service/UserService.php";
 require_once dirname(__DIR__, 2) . '/schema/Config.php';
 
 session_start();
@@ -39,12 +39,12 @@ try {
         }
 
         if (!isset($error)) {
-            $userController = new UserController($user);
+            $userService = new UserService($user);
 
-            $result = $userController->login();
+            $result = $userService->login();
 
             if ($result['success']) {
-                $userController->setUser($result['user']);
+                $userService->setUser($result['user']);
                 $_SESSION['user_id'] = $result['user']->getId();
                 $_SESSION['username'] = $result['user']->getUsername();
                 unset($_SESSION['failed_attempts']);
@@ -54,10 +54,10 @@ try {
                     $token = generateToken();
                     $expires = date('Y-m-d H:i:s', strtotime('+'.numberOfDaysRemainingLogins.' days'));
 
-                    $userController->getUser()->setLoginToken($token);
-                    $userController->getUser()->setLoginTokenExpires($expires);
+                    $userService->getUser()->setLoginToken($token);
+                    $userService->getUser()->setLoginTokenExpires($expires);
 
-                    if ($userController->saveToken()) {
+                    if ($userService->saveToken()) {
                         error_log("user ". $result['user']->getUsername() . " save token successfully: ".$token . ", expires " . $expires);
                         // Set cookie (secure, HttpOnly, SameSite)
                         setcookie(

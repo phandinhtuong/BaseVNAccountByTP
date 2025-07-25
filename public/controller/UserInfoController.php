@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__DIR__, 2) . "/logging/logByTP.php";
 require dirname(__DIR__, 2) . "/class/User.php";
-require "UserController.php";
+require dirname(__DIR__, 1) . "/service/UserService.php";
 session_start();
 
 beginLog("userinfo controller");
@@ -16,19 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     try {
 
         $user = $_SESSION['user'];
-        $userController = new UserController($user);
+        $userService = new UserService($user);
 
-        error_log("Files array: " . print_r($_FILES, true));
-        error_log("Post data: " . print_r($_POST, true));
+//        error_log("Files array: " . print_r($_FILES, true));
+//        error_log("Post data: " . print_r($_POST, true));
 
         $day = isset($_POST['day']) ? (int)$_POST['day'] : null;
         $month = isset($_POST['month']) ? (int)$_POST['month'] : null;
         $year = isset($_POST['year']) ? (int)$_POST['year'] : null;
         $dob = null;
 
-        error_log("day = " . $day);
-        error_log("month = " . $month);
-        error_log("year = " . $year);
+//        error_log("day = " . $day);
+//        error_log("month = " . $month);
+//        error_log("year = " . $year);
 
         if ($day && $month && $year && checkdate($month, $day, $year)) {
             $dob = "$year-$month-$day";
@@ -59,9 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         $newUser->setPhoneNumber($_POST['phoneNumber'] ?? $user->getPhoneNumber());
         $newUser->setAddress($_POST['address'] ?? $user->getAddress());
 
-        if ($userController->update_profile($newUser)) {
+        if ($userService->update_profile($newUser)) {
             // Refresh user info
-            $user = $userController->getUserInfoFromDatabase();
+            $user = $userService->getUserInfoFromDatabase();
             //echo '<script>alert("Profile updated successfully!");</script>';
             $error = "success";
             endLog("success", "userinfo controller");

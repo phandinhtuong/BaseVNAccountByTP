@@ -1,5 +1,5 @@
 <?php
-require "controller/UserController.php";
+require "service/UserService.php";
 require_once "../logging/logByTP.php";
 session_start();
 beginLog("auth");
@@ -19,7 +19,7 @@ function authenticateUser()
         $user->setUsername($userName);
         $user->setloginToken($token);
 
-        $userController = new UserController($user);
+        $userController = new UserService($user);
 
         if ($userController->authToken()) {
             // Refresh session

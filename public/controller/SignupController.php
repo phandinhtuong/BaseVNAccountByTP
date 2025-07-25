@@ -2,7 +2,7 @@
 session_start();
 
 require dirname(__DIR__, 2) . "/class/User.php";
-require "UserController.php";
+require dirname(__DIR__, 1) . "/service/UserService.php";
 require_once dirname(__DIR__, 2) . "/logging/logByTP.php";
 
 beginLog("signup controller");
@@ -17,13 +17,13 @@ try {
         $user->setUsername($_POST['username']);
         $user->setName($_POST['name']);
 
-        $userController = new UserController($user);
+        $userService = new UserService($user);
 
-        $result = $userController->checkValidUserSignup();
+        $result = $userService->checkValidUserSignup();
 
         if ($result['success']) {
 
-            if ($userController->signup()){
+            if ($userService->signup()){
                 endLog("success", "signup");
                 header("Location: ../Login.php?registration=success"."&email=".urlencode($_POST['email']));
                 exit();

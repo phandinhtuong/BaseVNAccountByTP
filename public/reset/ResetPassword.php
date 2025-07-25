@@ -1,6 +1,6 @@
 <?php
 
-require "../controller/PasswordController.php";
+require "../service/PasswordResetService.php";
 require "../../class/PasswordReset.php";
 
 if (empty($_GET['token'])) {
@@ -11,9 +11,9 @@ $token = $_GET['token'];
 $passwordReset = new PasswordReset();
 $passwordReset->setToken($token);
 
-$passwordController = new PasswordController($passwordReset);
+$passwordResetService = new PasswordResetService($passwordReset);
 
-$result = $passwordController->authPasswordToken();
+$result = $passwordResetService->authPasswordToken();
 
 ?>
 

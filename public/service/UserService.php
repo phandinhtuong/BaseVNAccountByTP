@@ -3,7 +3,7 @@
 require_once dirname(__DIR__, 2) . "/schema/DataAccess.php";
 require_once dirname(__DIR__, 2) . "/logging/logByTP.php";
 
-class UserController
+class UserService
 {
     private User $user;
     private PDO $db;

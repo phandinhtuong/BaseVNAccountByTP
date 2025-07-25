@@ -1,7 +1,7 @@
 <?php
 
 require "../class/User.php";
-require "controller/UserController.php";
+require "service/UserService.php";
 require_once "../logging/logByTP.php";
 
 session_start();
@@ -12,9 +12,9 @@ if (!empty($_SESSION['username'])) {
     $user = new User();
     $user->setUsername($_SESSION['username']);
 
-    $userController = new UserController($user);
+    $userService = new UserService($user);
 
-    if ($userController->clearToken()) {
+    if ($userService->clearToken()) {
         error_log("clear token user " . $_SESSION['username'] . " successfully");
     }
 

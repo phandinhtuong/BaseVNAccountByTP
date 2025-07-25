@@ -1,8 +1,8 @@
 <?php
-require "../controller/PasswordController.php";
+require "../service/PasswordResetService.php";
 require "../../class/User.php";
 require "../../class/PasswordReset.php";
-require "../controller/UserController.php";
+require "../service/UserService.php";
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $passwordReset->setToken($token);
     $passwordReset->setEmail($email);
 
-    $passwordController = new PasswordController($passwordReset);
+    $passwordResetService = new PasswordResetService($passwordReset);
 
-    $result = $passwordController->authPasswordToken();
+    $result = $passwordResetService->authPasswordToken();
 
     if ($result == null) {
         $error = "invalidResetToken";
@@ -42,17 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user->setEmail($email);
     $user->setPassword($hashedPassword);
 
-    $userController = new UserController($user);
+    $userService = new UserService($user);
 
     // Update user password
-    if ($userController->updatePassword()){
+    if ($userService->updatePassword()){
         error_log("update password for email " . $email . " successfully");
     } else {
         error_log("update password for email " . $email . " failed");
     }
 
     // Delete reset token
-    if ($passwordController->deletePasswordReset()) {
+    if ($passwordResetService->deletePasswordReset()) {
         error_log("delete token " . $token . " successfully");
     } else {
         error_log("delete token " . $token . " failed");

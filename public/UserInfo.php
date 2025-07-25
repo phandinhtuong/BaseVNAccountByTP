@@ -26,23 +26,17 @@ try {
     $user = new User();
     $user->setUsername($username);
 
-    $userController = new UserController($user);
+    $userService = new UserService($user);
 
-    $user = $userController->getUserInfoFromDatabase();
+    $user = $userService->getUserInfoFromDatabase();
     $_SESSION['user'] = $user;
-    //$_SESSION['userController'] = $userController;
 
 } catch (Exception $e) {
     logException("get user information", $e);
     endLog("error","userinfo");
     throw new Exception("error get user information:".$e->getMessage());
 }
-
 endLog("success", "userinfo");
-
-
-
-
 
 ?>
 

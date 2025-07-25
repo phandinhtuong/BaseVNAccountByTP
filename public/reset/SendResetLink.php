@@ -3,8 +3,8 @@ require '../../vendor/autoload.php'; // Include PHPMailer
 
 require "../../class/User.php";
 require "../../class/PasswordReset.php";
-require "../controller/UserController.php";
-require "../controller/PasswordController.php";
+require "../service/UserService.php";
+require "../service/PasswordResetService.php";
 require_once "../../logging/logByTP.php";
 require_once "../../schema/Config.php";
 
@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = new User();
     $user->setemail($email);
 
-    $userController = new UserController($user);
+    $userService = new UserService($user);
 
-    if ($userController->checkEmail()) {
+    if ($userService->checkEmail()) {
         // Generate token
         $token = bin2hex(random_bytes(32));
         $expires = date('Y-m-d H:i:s', strtotime('+'.numberOfHoursResetTokenExpires.' hour'));
@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $passwordReset->setToken($token);
         $passwordReset->setExpiresAt($expires);
 
-        $passwordController = new PasswordController($passwordReset);
-        $passwordController->addPasswordReset();
+        $passwordResetService = new PasswordResetService($passwordReset);
+        $passwordResetService->addPasswordReset();
 
         // Send email
         $resetLink = linkWebsite . "reset/ResetPassword.php?token=$token";

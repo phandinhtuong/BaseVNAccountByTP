@@ -1,9 +1,9 @@
 <?php
 
-require_once '../../schema/DataAccess.php';
-require_once "../../logging/logByTP.php";
+require_once dirname(__DIR__, 2) . "/schema/DataAccess.php";
+require_once dirname(__DIR__, 2) . "/logging/logByTP.php";
 
-class PasswordController
+class PasswordResetService
 {
     private PasswordReset $passwordReset;
     private PDO $db;
