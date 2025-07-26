@@ -27,6 +27,7 @@ $result = $passwordResetService->authPasswordToken();
     <link rel="stylesheet" type="text/css" href="../../css/css3.css">
     <link rel="stylesheet" type="text/css" href="../../css/inputCSS.css">
     <script type="text/javascript" src="../../js/commonJS.js"></script>
+    <script type="text/javascript" src="../../js/ResetPasswordJS.js"></script>
 
 </head>
 <body>
@@ -88,15 +89,6 @@ $result = $passwordResetService->authPasswordToken();
                                         <div class='row relative xo'>
                                             <div class='submit' onclick="submitForm()" style="margin-top: 8px">Update Password</div>
                                             <button type="submit" name="update-submit" style="display: none;">update</button>
-                                            <script>
-                                                function submitForm() {
-                                                    const form = document.getElementById("updatePasswordForm");
-                                                    if (validatePasswordMatch()) {
-                                                        let submitButton = form.querySelector("[type=submit]");
-                                                        submitButton.click();
-                                                    }
-                                                }
-                                            </script>
                                         </div>
 
                                     </div>
@@ -104,28 +96,7 @@ $result = $passwordResetService->authPasswordToken();
 
 
                                 <script>
-                                    function validatePasswordMatch() {
-                                        const password = document.getElementById('password').value;
-                                        const confirmPassword = document.getElementById('confirm_password').value;
-                                        const errorElement = document.getElementById('passwordError');
 
-                                        if (password !== confirmPassword) {
-                                            errorElement.style.display = 'block';
-                                            return false; // Prevent form submission
-                                        }
-
-                                        errorElement.style.display = 'none';
-                                        return true; // Allow form submission
-                                    }
-                                    document.getElementById('confirm_password').addEventListener('keyup', function() {
-                                        validatePasswordMatch();
-                                    });
-
-
-                                    function hideShowPasswords(){
-                                        togglePasswordVisibility('password');
-                                        togglePasswordVisibility('confirm_password')
-                                    }
 
                                 </script>
                             <?php endif; ?>
