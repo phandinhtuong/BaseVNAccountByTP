@@ -64,25 +64,9 @@ function displayError() {
             'usernameExists': 'Username or email already exists',
             'default': 'Signup failed. Please try again.'
         };
-
         const errorCode = urlParams.get('error');
         showErrorModal(errorMessages[errorCode] || errorMessages['default']);
-
     }
-}
-
-function validatePasswordMatch() {
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm_password').value;
-    const errorElement = document.getElementById('passwordError');
-
-    if (password !== confirmPassword) {
-        errorElement.style.display = 'block';
-        return false; // Prevent form submission
-    }
-
-    errorElement.style.display = 'none';
-    return true; // Allow form submission
 }
 
 

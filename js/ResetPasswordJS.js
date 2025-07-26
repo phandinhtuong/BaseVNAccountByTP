@@ -1,16 +1,4 @@
-function validatePasswordMatch() {
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirm_password').value;
-    const errorElement = document.getElementById('passwordError');
 
-    if (password !== confirmPassword) {
-        errorElement.style.display = 'block';
-        return false; // Prevent form submission
-    }
-
-    errorElement.style.display = 'none';
-    return true; // Allow form submission
-}
 document.getElementById('confirm_password').addEventListener('keyup', function() {
     validatePasswordMatch();
 });
