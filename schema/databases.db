@@ -13,6 +13,8 @@ CREATE TABLE users (
     managers VARCHAR(255),
     address VARCHAR(255),
     profile_picture BLOB,
+    user_id VARCHAR(100),
+    system_id VARCHAR(100),
     login_token VARCHAR(64),
     login_token_expires DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP

@@ -20,13 +20,13 @@ if (!empty($_SESSION['user_id']) or !empty($_COOKIE['remember'])) {
 
 
 </head>
-<body>
+<body style="overflow: auto">
     <a href="../index.html">Home</a>
     <div class="signup-container">
         <div id='master' class='wf'>
             <div id='page'>
-                <div id='auth' class='scrollable' data-autoscroll='1' data-autohide='1'>
-                    <div class='box-wrap'>
+                <div id='auth' class='scrollable' data-autoscroll='1' data-autohide='1' style="position: relative;">
+                    <div class='box-wrap' style="background: white; padding-bottom: 0">
                         <div class='auth-logo'>
                             <a href='../index.html'>
                                 <img src='../images/logo.full.png'/>
@@ -36,7 +36,7 @@ if (!empty($_SESSION['user_id']) or !empty($_COOKIE['remember'])) {
                             <form action='controller/SignupController.php' method='post' id="signupForm" onsubmit="return validatePasswordMatch()">
                                 <h1>Signup</h1>
                                 <div class='auth-sub-title'>Welcome. Signup to login.</div>
-                                <div class='form'>
+                                <div class='form' style="padding-bottom: 30px">
                                     <div class='row'>
                                         <div class='label'>Email</div>
                                         <div class='input'>
@@ -78,10 +78,22 @@ if (!empty($_SESSION['user_id']) or !empty($_COOKIE['remember'])) {
                                         </div>
                                     </div>
 
+                                    <div class='row'>
+                                        <div class='label'>User ID</div>
+                                        <div class='input'>
+                                            <input type='text' name='userID' placeholder='Your user ID'>
+                                        </div>
+                                    </div>
 
+                                    <div class='row'>
+                                        <div class='label'>System ID</div>
+                                        <div class='input'>
+                                            <input type='text' name='systemID'  placeholder='Your system ID'>
+                                        </div>
+                                    </div>
 
                                     <div class='row relative xo'>
-                                        <div class='submit' onclick="submitForm()">Sign up</div>
+                                        <div class='submit' onclick="submitForm()" style="margin-top: 10px;">Sign up</div>
                                         <button type="submit" name="signup" style="display: none;">Sign up</button>
                                     </div>
                                     <span class='a normal url' onclick="redirectToLogin()">Already had an account? Login here</span>

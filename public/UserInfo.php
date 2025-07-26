@@ -34,7 +34,9 @@ try {
 } catch (Exception $e) {
     logException("get user information", $e);
     endLog("error","userinfo");
-    throw new Exception("error get user information:".$e->getMessage());
+    //throw new Exception("error get user information:".$e->getMessage());
+    header("Location: Logout.php");
+    exit();
 }
 endLog("success", "userinfo");
 

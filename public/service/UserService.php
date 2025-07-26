@@ -98,8 +98,8 @@ class UserService
         $this->processBeforeSignup();
 
         try {
-            $sql = "INSERT INTO users (username, email, name, first_name, last_name, password) 
-                             VALUES (:username, :email, :name, :first_name, :last_name, :password)";
+            $sql = "INSERT INTO users (username, email, name, first_name, last_name, password, user_id, system_id) 
+                             VALUES (:username, :email, :name, :first_name, :last_name, :password, :user_id, :system_id)";
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue(':username', $this->user->getUsername());
             $stmt->bindValue(':email', $this->user->getEmail());
@@ -107,6 +107,8 @@ class UserService
             $stmt->bindValue(':first_name', $this->user->getFirstName());
             $stmt->bindValue(':last_name', $this->user->getLastName());
             $stmt->bindValue(':password', $this->user->getPassword());
+            $stmt->bindValue(':user_id', $this->user->getUserId());
+            $stmt->bindValue(':system_id', $this->user->getSystemId());
 
             $stmt->execute();
 

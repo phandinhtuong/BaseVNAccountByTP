@@ -16,6 +16,8 @@ try {
         $user->setPassword($_POST['password']);
         $user->setUsername($_POST['username']);
         $user->setName($_POST['name']);
+        $user->setUserId($_POST['userID']);
+        $user->setSystemID($_POST['systemID']);
 
         $userService = new UserService($user);
 
@@ -33,12 +35,16 @@ try {
             endLog("Location: ../Signup.php?error=".$result['error']
                 ."&name=".urlencode($_POST['name'])
                 ."&username=".urlencode($_POST['username'])
-                ."&email=".urlencode($_POST['email']), "signup controller");
+                ."&email=".urlencode($_POST['email'])
+                ."&userID=".urlencode($_POST['userID'])
+                ."&systemID=".urlencode($_POST['systemID']), "signup controller");
 
             header("Location: ../Signup.php?error=".$result['error']
                 ."&name=".urlencode($_POST['name'])
                 ."&username=".urlencode($_POST['username'])
-                ."&email=".urlencode($_POST['email']));
+                ."&email=".urlencode($_POST['email'])
+                ."&userID=".urlencode($_POST['userID'])
+                ."&systemID=".urlencode($_POST['systemID']));
             exit();
         }
     }

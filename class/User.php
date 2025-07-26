@@ -16,6 +16,8 @@ class User
     private string $managers;
     private string $address;
     private string $profile_picture;
+    private string $user_id;
+    private string $system_id;
     private string $login_token;
     private string $login_token_expires;
     private string $created_at;
@@ -264,6 +266,38 @@ class User
     public function setProfilePicture(string $profile_picture): void
     {
         $this->profile_picture = $profile_picture;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserId(): string
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param string $user_id
+     */
+    public function setUserId(string $user_id): void
+    {
+        $this->user_id = $user_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSystemId(): string
+    {
+        return $this->system_id;
+    }
+
+    /**
+     * @param string $system_id
+     */
+    public function setSystemId(string $system_id): void
+    {
+        $this->system_id = $system_id;
     }
 
     /**

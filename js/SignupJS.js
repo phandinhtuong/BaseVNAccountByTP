@@ -22,7 +22,9 @@ function displayError() {
         const savedValues = {
             name: urlParams.get('name'),
             username: urlParams.get('username'),
-            email: urlParams.get('email')
+            email: urlParams.get('email'),
+            userID: urlParams.get('userID'),
+            systemID: urlParams.get('systemID'),
         };
 
         if (window.location.search) {
@@ -39,6 +41,12 @@ function displayError() {
         }
         if (savedValues.email) {
             document.querySelector('input[name="email"]').value = decodeURIComponent(savedValues.email);
+        }
+        if (savedValues.userID) {
+            document.querySelector('input[name="userID"]').value = decodeURIComponent(savedValues.userID);
+        }
+        if (savedValues.systemID) {
+            document.querySelector('input[name="systemID"]').value = decodeURIComponent(savedValues.systemID);
         }
 
         console.error("error exists");
